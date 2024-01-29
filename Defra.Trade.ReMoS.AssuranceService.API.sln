@@ -1,0 +1,111 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B0681B4A-4263-45B5-A783-2F001CDB7D0B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Defra.Trade.ReMoS.AssuranceService.API.Domain", "src\Defra.Trade.ReMoS.AssuranceService.API.Domain\Defra.Trade.ReMoS.AssuranceService.API.Domain.csproj", "{14C2F875-E8DA-4A49-8C9A-E0BD560DBAB5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Defra.Trade.ReMoS.AssuranceService.API.Core", "src\Defra.Trade.ReMoS.AssuranceService.API.Core\Defra.Trade.ReMoS.AssuranceService.API.Core.csproj", "{15670493-C32D-431C-8014-D77C4516B681}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Defra.Trade.ReMoS.AssuranceService.API.Data", "src\Defra.Trade.ReMoS.AssuranceService.API.Data\Defra.Trade.ReMoS.AssuranceService.API.Data.csproj", "{79D802CD-464A-4BF2-B4E8-594E02C010EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Defra.Trade.ReMoS.AssuranceService.API", "src\Defra.Trade.ReMoS.AssuranceService.API\Defra.Trade.ReMoS.AssuranceService.API.csproj", "{2E8DC66A-9B84-43F6-9A68-BDFAA7D30642}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{98B0AE3A-7D4C-48BB-9170-6E46338305A1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Defra.Trade.ReMoS.AssuranceService.API.Core.UnitTests", "tests\Defra.Trade.ReMoS.AssuranceService.API.Core.UnitTests\Defra.Trade.ReMoS.AssuranceService.API.Core.UnitTests.csproj", "{5FEFB26C-5F61-40DA-871B-67045AED7E74}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Defra.Trade.ReMoS.AssuranceService.API.Data.UnitTests", "tests\Defra.Trade.ReMoS.AssuranceService.API.Data.UnitTests\Defra.Trade.ReMoS.AssuranceService.API.Data.UnitTests.csproj", "{2DA92D8D-E62F-45F5-82A3-355335533601}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Defra.Trade.ReMoS.AssuranceService.API.Domain.UnitTests", "tests\Defra.Trade.ReMoS.AssuranceService.API.Domain.UnitTests\Defra.Trade.ReMoS.AssuranceService.API.Domain.UnitTests.csproj", "{759C2803-1490-4547-B1DE-17529F7F1B14}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Defra.Trade.ReMoS.AssuranceService.API.UnitTests", "tests\Defra.Trade.ReMoS.AssuranceService.API.UnitTests\Defra.Trade.ReMoS.AssuranceService.API.UnitTests.csproj", "{2BEFD97B-829C-4412-9764-BE1145411F6B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosting", "Hosting", "{D7A4BB2F-6553-4805-8BE4-78408393E38A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{8D99E9A7-72D6-4EEA-AFE3-C9AEBF4060EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{EDB4B8A4-24F2-415E-BF73-FD7E2B57C308}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{FB099B60-17FD-4C90-9818-8C088E691A5E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pipeline", "pipeline", "{90144F17-991D-437A-B028-9C98B4BE6E9F}"
+	ProjectSection(SolutionItems) = preProject
+		pipeline\build-sql.yaml = pipeline\build-sql.yaml
+		pipeline\pipeline-api.yml = pipeline\pipeline-api.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api-config", "api-config", "{ED84FA84-85CB-4AD4-A0AA-1DDC92105743}"
+	ProjectSection(SolutionItems) = preProject
+		trade-remos-api.yaml = trade-remos-api.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "policies", "policies", "{9FF8C9FD-83C8-4757-8ED7-71CCB80315BD}"
+	ProjectSection(SolutionItems) = preProject
+		apiPolicyHeaders.xml = apiPolicyHeaders.xml
+		apiPolicyHeadersMock.xml = apiPolicyHeadersMock.xml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{14C2F875-E8DA-4A49-8C9A-E0BD560DBAB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14C2F875-E8DA-4A49-8C9A-E0BD560DBAB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14C2F875-E8DA-4A49-8C9A-E0BD560DBAB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14C2F875-E8DA-4A49-8C9A-E0BD560DBAB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15670493-C32D-431C-8014-D77C4516B681}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15670493-C32D-431C-8014-D77C4516B681}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15670493-C32D-431C-8014-D77C4516B681}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15670493-C32D-431C-8014-D77C4516B681}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79D802CD-464A-4BF2-B4E8-594E02C010EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79D802CD-464A-4BF2-B4E8-594E02C010EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79D802CD-464A-4BF2-B4E8-594E02C010EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79D802CD-464A-4BF2-B4E8-594E02C010EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E8DC66A-9B84-43F6-9A68-BDFAA7D30642}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E8DC66A-9B84-43F6-9A68-BDFAA7D30642}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E8DC66A-9B84-43F6-9A68-BDFAA7D30642}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E8DC66A-9B84-43F6-9A68-BDFAA7D30642}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FEFB26C-5F61-40DA-871B-67045AED7E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FEFB26C-5F61-40DA-871B-67045AED7E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FEFB26C-5F61-40DA-871B-67045AED7E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FEFB26C-5F61-40DA-871B-67045AED7E74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DA92D8D-E62F-45F5-82A3-355335533601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DA92D8D-E62F-45F5-82A3-355335533601}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DA92D8D-E62F-45F5-82A3-355335533601}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DA92D8D-E62F-45F5-82A3-355335533601}.Release|Any CPU.Build.0 = Release|Any CPU
+		{759C2803-1490-4547-B1DE-17529F7F1B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{759C2803-1490-4547-B1DE-17529F7F1B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{759C2803-1490-4547-B1DE-17529F7F1B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{759C2803-1490-4547-B1DE-17529F7F1B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BEFD97B-829C-4412-9764-BE1145411F6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BEFD97B-829C-4412-9764-BE1145411F6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BEFD97B-829C-4412-9764-BE1145411F6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BEFD97B-829C-4412-9764-BE1145411F6B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{14C2F875-E8DA-4A49-8C9A-E0BD560DBAB5} = {FB099B60-17FD-4C90-9818-8C088E691A5E}
+		{15670493-C32D-431C-8014-D77C4516B681} = {8D99E9A7-72D6-4EEA-AFE3-C9AEBF4060EB}
+		{79D802CD-464A-4BF2-B4E8-594E02C010EF} = {EDB4B8A4-24F2-415E-BF73-FD7E2B57C308}
+		{2E8DC66A-9B84-43F6-9A68-BDFAA7D30642} = {D7A4BB2F-6553-4805-8BE4-78408393E38A}
+		{5FEFB26C-5F61-40DA-871B-67045AED7E74} = {98B0AE3A-7D4C-48BB-9170-6E46338305A1}
+		{2DA92D8D-E62F-45F5-82A3-355335533601} = {98B0AE3A-7D4C-48BB-9170-6E46338305A1}
+		{759C2803-1490-4547-B1DE-17529F7F1B14} = {98B0AE3A-7D4C-48BB-9170-6E46338305A1}
+		{2BEFD97B-829C-4412-9764-BE1145411F6B} = {98B0AE3A-7D4C-48BB-9170-6E46338305A1}
+		{D7A4BB2F-6553-4805-8BE4-78408393E38A} = {B0681B4A-4263-45B5-A783-2F001CDB7D0B}
+		{8D99E9A7-72D6-4EEA-AFE3-C9AEBF4060EB} = {B0681B4A-4263-45B5-A783-2F001CDB7D0B}
+		{EDB4B8A4-24F2-415E-BF73-FD7E2B57C308} = {B0681B4A-4263-45B5-A783-2F001CDB7D0B}
+		{FB099B60-17FD-4C90-9818-8C088E691A5E} = {B0681B4A-4263-45B5-A783-2F001CDB7D0B}
+		{9FF8C9FD-83C8-4757-8ED7-71CCB80315BD} = {ED84FA84-85CB-4AD4-A0AA-1DDC92105743}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1CE1BAE9-FBAE-43CC-B087-F27B1C5AEA40}
+	EndGlobalSection
+EndGlobal

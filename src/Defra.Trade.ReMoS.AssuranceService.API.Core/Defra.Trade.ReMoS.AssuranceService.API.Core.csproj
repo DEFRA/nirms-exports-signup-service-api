@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>613091b2-164d-4a26-917a-52c643890ee9</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.16.0" />
+    <PackageReference Include="Defra.Trade.Address.V1.ApiClient" Version="1.0.3" />
+    <PackageReference Include="Defra.Trade.Common.Security" Version="2.0.5" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.16" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+    <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Defra.Trade.ReMoS.AssuranceService.API.Data\Defra.Trade.ReMoS.AssuranceService.API.Data.csproj" />
+    <ProjectReference Include="..\Defra.Trade.ReMoS.AssuranceService.API.Domain\Defra.Trade.ReMoS.AssuranceService.API.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+</Project>

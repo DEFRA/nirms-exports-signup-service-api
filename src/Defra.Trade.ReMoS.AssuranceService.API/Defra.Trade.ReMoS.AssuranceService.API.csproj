@@ -1,0 +1,62 @@
+﻿<!--<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>-->
+
+
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>4268c0ff-c539-4b8c-9a24-8d30f95bad48</UserSecretsId>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
+		<PackageReference Include="Azure.Identity" Version="1.9.0" />
+		<PackageReference Include="Defra.Trade.Address.V1.ApiClient" Version="1.0.3" />
+		<PackageReference Include="Defra.Trade.Common.Api" Version="2.0.5" GeneratePathProperty="true">
+      <ApiXmlDoc>$(PkgDefra_Trade_Common_Api)\lib\net6.0\Defra.Trade.Common.Api.xml</ApiXmlDoc>
+    </PackageReference>
+		<PackageReference Include="Defra.Trade.Common.Security" Version="2.0.5" />
+		<PackageReference Include="Defra.Trade.Common.Sql" Version="2.0.1" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.16">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.1.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Defra.Trade.ReMoS.AssuranceService.API.Core\Defra.Trade.ReMoS.AssuranceService.API.Core.csproj" />
+		<ProjectReference Include="..\Defra.Trade.ReMoS.AssuranceService.API.Data\Defra.Trade.ReMoS.AssuranceService.API.Data.csproj" />
+	</ItemGroup>
+
+  <Target Name="BuildCopyPackagesXmlDoc" AfterTargets="Build">
+    <ItemGroup>
+      <PackageReferenceFiles Condition="%(PackageReference.ApiXmlDoc) != ''" Include="%(PackageReference.ApiXmlDoc)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PackageReferenceFiles)" DestinationFolder="$(OutDir)" />
+  </Target>
+
+  <Target Name="PublishCopyPackagesXmlDoc" AfterTargets="PrepareForPublish">
+    <ItemGroup>
+      <PackageReferenceFiles Condition="%(PackageReference.ApiXmlDoc) != ''" Include="%(PackageReference.ApiXmlDoc)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PackageReferenceFiles)" DestinationFolder="$(PublishDir)" />
+  </Target>
+
+</Project>

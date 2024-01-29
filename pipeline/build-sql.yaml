@@ -1,0 +1,36 @@
+name: 'V1-B$(Date:yyyyMMdd)-$(BuildID)'
+
+parameters:
+  - name: forceDevDeploy
+    displayName: "Force deployment to DEV"
+    type: boolean
+    default: false
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - '*'
+  paths:
+    include:
+      - src/Defra.Trade.ReMoS.AssuranceService.API.Data/*
+      - src/Defra.Trade.ReMoS.AssuranceService.API.Data/Persistence/*
+      - pipeline/build-sql.yaml
+
+resources:
+  repositories:
+    - repository: PipelineCommon
+      name: DEFRA-TRD/Defra.TRD.Pipeline.Common
+      type: git
+      ref: feature/rc-sqlmodel-change
+
+extends:
+  template: /templates/basic-sqlmodel-deploy.yaml@PipelineCommon
+  parameters:
+    forceDevDeploy: '${{ parameters.forceDevDeploy }}'
+    sqlServerName: 'trsdbssq1001'
+    sqlDatabaseName: 'trade-remos-signup'
+    sqlModelSourcePath: 'src/Defra.Trade.ReMoS.AssuranceService.API'
+    sqlModelName: 'Defra.Trade.ReMoS.AssuranceService.API'
+    useMigrations: true
+    releaseUpperEnvs: true

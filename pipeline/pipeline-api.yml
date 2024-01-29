@@ -1,0 +1,118 @@
+name: 'V1-B$(Date:yyyyMMdd)-$(BuildID)'
+
+parameters:
+  - name: forceDevDeploy
+    displayName: "Force deployment to DEV"
+    type: boolean
+    default: false
+  - name: deployToSecondary
+    displayName: "Select Secondary Region"
+    type: string
+    default: PRD
+    values:
+      - None
+      - DEV
+      - TST
+      - PRE
+      - PRD
+  - name: deployDevSlot
+    displayName: "Deploy to DEV Staging Slot?"
+    type: boolean
+    default: false
+  - name: deployTstSlot
+    displayName: "Deploy to TST Staging Slot?"
+    type: boolean
+    default: false
+  - name: deployPreSlot
+    displayName: "Deploy to Pre-Prod Staging Slot?"
+    type: boolean
+    default: false
+  - name: deployPrdSlot
+    displayName: "Deploy to Production Staging Slot?"
+    type: boolean
+    default: false
+  - name: runSpecFlowTests
+    displayName: "Regression UI Tests"
+    type: boolean
+    default: false
+  - name: qualityGate
+    displayName: "Quality Gate parameters"
+    type: object
+    default:
+      enforceQualityGate: false
+      warningVariance: 1
+      coverageVariance: 1
+      coverageType: 'blocks'
+      baseBranch: '$(System.PullRequest.TargetBranch)'
+      allowWarningVariance: true
+      allowCoverageVariance: true
+  - name: libraryVersion
+    displayName: "Client Library Version Number"
+    type: string
+    default: '1.0.0'
+  - name: runCodeGeneration
+    displayName: "Generate Client Libraries?"
+    type: boolean
+    default: false
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - 'master'
+    - 'dev'
+  paths:
+    include:
+    - src/Defra.Trade.ReMoS.AssuranceService.API/*
+    - test/*
+
+resources:
+  repositories:
+    - repository: PipelineCommon
+      name: DEFRA-TRD/Defra.TRD.Pipeline.Common
+      type: git
+      ref: master
+
+variables:
+  APIName: Defra.Trade.ReMoS.AssuranceService.API
+  UseProductionData: $[ne(variables['environment'], 'dev')]
+
+extends:
+  template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
+  parameters:
+    forceDevDeploy: ${{ parameters.forceDevDeploy }}
+    deployToSecondary: ${{ parameters.deployToSecondary }}
+    appName: $(APIName)
+    appProject: GC
+    sqlProject: TRS
+    sbProject: TRE
+    appInstanceNumber: $(nc-region-id)02
+    buildProjects: 'src\$(APIName)\$(APIName).csproj'
+    publishProject: 'src\$(APIName)\$(APIName).csproj'
+    publishArguments: '--configuration Release'
+    runHealthCheck: false
+    setupSlotKeyVaultAccess: true
+    deployDevSlot: ${{ parameters.deployDevSlot }}
+    appSettings: >-
+      -KeyVaultEndpoint "https://$(Environment.Name)TRD$(nc-function-infrastructure)$(nc-resource-keyvault)1001.vault.azure.net/" 
+      -enableAppConfigServer true
+      -AddressApi:BaseUrl "https://$(internalAPIMUrl)/trade-address-api/v1/"
+      -TradePlatform:ServiceBusConnectionString "$(serviceBusNamespace)"
+      -TradePlatform:ServiceBusName "defra.trade.sus.remos.signup"
+      -ServiceBusEnvironment "WebApp"
+    connectionStrings: '[{"name": "sql_db", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-remos-signup;Authentication=Active Directory Managed Identity;", "type": "SQLAzure", "slotSetting": false}]'
+    setupMiUser: true
+    runSonarScan: true
+    runVulnerabilityScan: false
+    sonarExclusionPaths: 'src/*.Api*/**, src/Defra.Trade.ReMoS.AssuranceService.API/Program.cs'
+    skipBuildTests: true
+    qualityGate: ${{ parameters.qualityGate }}
+    codeGeneration:
+      ApiClientName: 'REMOS'
+      ApiVersion: 'v1'
+      Version: ${{ parameters.libraryVersion }}
+      runClientGeneration: ${{ parameters.runCodeGeneration }}
+    publishAPIMApi: 
+      apiConfig: '**/api-config/trade-remos-api.yml'
+      apiProjectName: '$(APIName)'
+      apiTemplate: 'trade-remos-api'
