@@ -59,8 +59,7 @@ trigger:
   batch: true
   branches:
     include:
-    - 'master'
-    - 'dev'
+    - '*'
   paths:
     include:
     - src/Defra.Trade.ReMoS.AssuranceService.API/*
