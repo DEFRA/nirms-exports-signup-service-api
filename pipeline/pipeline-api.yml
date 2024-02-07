@@ -84,7 +84,10 @@ steps:
     script: |
       # Write your PowerShell commands here.
       Write-Host "Hello World"
-      ls -la
+      Get-ChildItem -Path "$(System.DefaultWorkingDirectory)"
+      Get-Content -Path "$(System.DefaultWorkingDirectory)/*.sln"
+      Get-Content -Path "$(System.DefaultWorkingDirectory)/*.xml"
+
 
 # extends:
 #   template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
