@@ -95,14 +95,13 @@ extends:
   parameters:
     forceDevDeploy: ${{ parameters.forceDevDeploy }}
     deployToSecondary: ${{ parameters.deployToSecondary }}
-    buildProjects: "./*.sln"
     appName: $(APIName)
     appProject: GC
     sqlProject: TRS
     sbProject: TRE
     appInstanceNumber: $(nc-region-id)02
-    buildProjects: 'src\$(APIName)\$(APIName).csproj'
-    publishProject: 'src\$(APIName)\$(APIName).csproj'
+    buildProjects: '$(System.DefaultWorkingDirectory)\src\$(APIName)\$(APIName).csproj'
+    publishProject: '$(System.DefaultWorkingDirectory)\src\$(APIName)\$(APIName).csproj'
     publishArguments: '--configuration Release'
     runHealthCheck: false
     setupSlotKeyVaultAccess: true
