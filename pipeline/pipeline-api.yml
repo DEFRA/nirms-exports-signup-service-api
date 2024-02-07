@@ -85,8 +85,9 @@ steps:
       # Write your PowerShell commands here.
       Write-Host "Hello World"
       Get-ChildItem -Path "$(System.DefaultWorkingDirectory)"
-      Get-Content -Path "**/*.sln"
+      Get-Content -Path "./*.sln"
       Get-Content -Path "*/*.xml"
+  continueOnError: true  
 
 
 # extends:
