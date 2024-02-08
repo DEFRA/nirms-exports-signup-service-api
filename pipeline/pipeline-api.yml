@@ -85,6 +85,7 @@ steps:
       Write-Host "Hello World"
       Get-ChildItem -Path "$(System.DefaultWorkingDirectory)"
       Get-Content -Path "src/$(APIName)/$(APIName).csproj"
+      ls -la
       pwd
   continueOnError: true  
 
