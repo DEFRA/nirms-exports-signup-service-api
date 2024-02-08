@@ -85,7 +85,9 @@ steps:
       # Original file path
       $file = "src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj" 
 
-      $adjustedPath = Join-Path -Path (Split-Path -Path "$(Build.SourcesDirectory)/**/*Api.csproj" -Parent) -ChildPath "*.csproj"; Write-Output $adjustedPath
+      $adjustedPath = Join-Path -Path (Split-Path -Path "$(Build.SourcesDirectory)/**/*Api.csproj" -Parent) -ChildPath "*.csproj";
+      Write-Output $adjustedPath
+      Get-Content -Path $adjustedPath
   continueOnError: true  
 
 # Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/${{ parameters.buildProjects }}"
