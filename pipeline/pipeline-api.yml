@@ -70,7 +70,7 @@ resources:
     - repository: PipelineCommon
       name: DEFRA-TRD/Defra.TRD.Pipeline.Common
       type: git
-      ref: pp/test-paths-github-repos #master
+      ref: master
 
 variables:
   APIName: Defra.Trade.ReMoS.AssuranceService.API
@@ -97,9 +97,8 @@ extends:
     sqlProject: TRS
     sbProject: TRE
     appInstanceNumber: $(nc-region-id)02
-    provider: 'Github'
-    buildProjects: '**/*Api.csproj'
-    publishProject: '**/*Api.csproj'
+    buildProjects: './*Api.csproj'
+    publishProject: './*Api.csproj'
     publishArguments: '--configuration Release'
     runHealthCheck: false
     setupSlotKeyVaultAccess: true
