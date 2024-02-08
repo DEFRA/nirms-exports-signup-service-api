@@ -84,8 +84,7 @@ steps:
       # Original path
       Write-Output "$(Build.Repository.Provider)-$(Build.Repository.Name)"
   continueOnError: true  
-
-Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/${{ parameters.buildProjects }}"
+# Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/${{ parameters.buildProjects }}"
 
 # extends:
 #   template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
