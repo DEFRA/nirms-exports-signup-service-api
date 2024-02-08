@@ -100,7 +100,7 @@ extends:
     sbProject: TRE
     appInstanceNumber: $(nc-region-id)02
     buildProjects: '*/*Api.csproj'
-    publishProject: '**/*Api.csproj'
+    publishProject: '*/*Api.csproj'
     publishArguments: '--configuration Release'
     runHealthCheck: false
     setupSlotKeyVaultAccess: true
