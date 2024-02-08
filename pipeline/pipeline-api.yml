@@ -97,7 +97,7 @@ extends:
     sqlProject: TRS
     sbProject: TRE
     appInstanceNumber: $(nc-region-id)02
-    provider: '$(Build.Repository.Provider)'
+    provider: 'Github'
     buildProjects: '**/*Api.csproj'
     publishProject: '**/*Api.csproj'
     publishArguments: '--configuration Release'
