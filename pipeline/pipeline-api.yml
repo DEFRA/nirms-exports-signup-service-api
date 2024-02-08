@@ -84,7 +84,7 @@ steps:
       # Write your PowerShell commands here.
       Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
       
-      Get-Content -Path "$(Build.SourcesDirectory)/$(Build.Repository.Name)/src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
+      Get-Content -Path "$(Build.SourcesDirectory)/src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
 
   continueOnError: true  
 
