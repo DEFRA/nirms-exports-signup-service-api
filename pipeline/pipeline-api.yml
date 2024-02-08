@@ -83,7 +83,7 @@ steps:
     script: |
       # Write your PowerShell commands here.
       Write-Host "Hello World"
-      Get-ChildItem -Path "$(System.DefaultWorkingDirectory)"
+      Get-ChildItem -Path  "$(Build.SourcesDirectory)"
       Get-Content -Path "src/$(APIName)/$(APIName).csproj"
       ls -la
       pwd
