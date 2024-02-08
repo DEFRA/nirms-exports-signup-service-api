@@ -93,6 +93,7 @@ steps:
       # Output the adjusted path
       Write-Output $adjustedPath
       Get-Content -Path $adjustedPath
+      Get-Content -Path "src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
 
   continueOnError: true  
 
