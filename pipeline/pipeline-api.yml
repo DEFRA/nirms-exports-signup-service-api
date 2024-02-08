@@ -83,16 +83,9 @@ steps:
     script: |
       # Write your PowerShell commands here.
       # Original file path
-      $file = "src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"  #"**/*Api.csproj"
+      $file = "src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj" 
 
-      # Get the parent directory
-      $parentDirectory = Split-Path -Path $file -Parent
-
-      # Navigate one directory back
-      $adjustedPath = Join-Path -Path $parentDirectory -ChildPath "*.csproj"
-
-      # Output the adjusted path
-      Write-Output $adjustedPath
+      $adjustedPath = Join-Path -Path (Split-Path -Path "$(Build.SourcesDirectory)/**/*Api.csproj" -Parent) -ChildPath "*.csproj"; Write-Output $adjustedPath
   continueOnError: true  
 
 # Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/${{ parameters.buildProjects }}"
