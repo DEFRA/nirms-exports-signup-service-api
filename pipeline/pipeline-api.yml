@@ -100,8 +100,8 @@ extends:
     sqlProject: TRS
     sbProject: TRE
     appInstanceNumber: $(nc-region-id)02
-    buildProjects: 'src/$(APIName)/$(APIName).csproj'
-    publishProject: 'src/$(APIName)/$(APIName).csproj'
+    buildProjects: 'src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj'
+    publishProject: 'src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj'
     publishArguments: '--configuration Release'
     runHealthCheck: false
     setupSlotKeyVaultAccess: true
