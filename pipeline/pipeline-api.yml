@@ -84,7 +84,7 @@ variables:
 #       # Original path
 #       Write-Output "$(Build.Repository.Provider)"
 #   continueOnError: true  
-
+# provider: '$(Build.Repository.Provider)'
 # Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/${{ parameters.buildProjects }}"
 
 extends:
@@ -97,7 +97,6 @@ extends:
     sqlProject: TRS
     sbProject: TRE
     appInstanceNumber: $(nc-region-id)02
-    provider: '$(Build.Repository.Provider)'
     buildProjects: 'src/*/*Api.csproj'
     publishProject: 'src/*/*Api.csproj'
     publishArguments: '--configuration Release'
