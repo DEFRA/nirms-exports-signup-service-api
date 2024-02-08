@@ -99,8 +99,6 @@ steps:
       # Output the file contents
       Write-Output $fileContents
 
-      Get-Content -Path "src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
-
   continueOnError: true  
 
 # Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/${{ parameters.buildProjects }}"
