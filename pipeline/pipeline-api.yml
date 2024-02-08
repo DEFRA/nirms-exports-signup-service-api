@@ -82,7 +82,7 @@ steps:
     targetType: 'inline'
     script: |
       # Original path
-      $path = "**/*.sln"
+      $path = "src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
 
       # Get the file name
       $fileName = [System.IO.Path]::GetFileName($path)
