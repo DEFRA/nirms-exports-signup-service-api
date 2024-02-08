@@ -82,13 +82,14 @@ steps:
     targetType: 'inline'
     script: |
       # Write your PowerShell commands here.
-      #Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/${{ parameters.buildProjects }}"
+      
       Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
       
       Get-Content -Path "$(Build.SourcesDirectory)/**/*Api.csproj"
 
   continueOnError: true  
 
+# Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/${{ parameters.buildProjects }}"
 
 # extends:
 #   template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
