@@ -82,6 +82,7 @@ steps:
     targetType: 'inline'
     script: |
       # Original path
+      Write-Output "$(Build.SourcesDirectory)/**/*Api.csproj"
       $path = "src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
 
       # Get the file name
