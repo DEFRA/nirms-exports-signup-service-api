@@ -82,17 +82,23 @@ steps:
     targetType: 'inline'
     script: |
       # Original path
-      $path = "src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
+      $path = "**/*.sln"
 
-      # Resolve the path
-      $resolvedPath = Resolve-Path $path
+      # Get the file name
+      $fileName = [System.IO.Path]::GetFileName($path)
 
       # Navigate one directory back
-      $adjustedPath = Split-Path -Path $resolvedPath -Parent
+      $parentPath = Split-Path -Path $path -Parent
 
-      # Output the adjusted path
-      Write-Output $adjustedPath
-      Get-Content -Path $adjustedPath
+      # Resolve the path
+      $resolvedPath = Resolve-Path $parentPath
+
+      # Read file contents
+      $fileContents = Get-Content -Path (Join-Path -Path $resolvedPath -ChildPath $fileName)
+
+      # Output the file contents
+      Write-Output $fileContents
+
       Get-Content -Path "src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
 
   continueOnError: true  
