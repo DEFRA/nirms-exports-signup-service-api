@@ -76,55 +76,55 @@ variables:
   APIName: Defra.Trade.ReMoS.AssuranceService.API
   UseProductionData: $[ne(variables['environment'], 'dev')]
 
-steps:
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Write your PowerShell commands here.
-      Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
+# steps:
+# - task: PowerShell@2
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       # Write your PowerShell commands here.
+#       Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
       
-      Get-Content -Path "$(Build.SourcesDirectory)/src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
+#       Get-Content -Path "$(Build.SourcesDirectory)/src/Defra.Trade.ReMoS.AssuranceService.API/Defra.Trade.ReMoS.AssuranceService.API.csproj"
 
-  continueOnError: true  
+#   continueOnError: true  
 
 
-# extends:
-#   template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
-#   parameters:
-#     forceDevDeploy: ${{ parameters.forceDevDeploy }}
-#     deployToSecondary: ${{ parameters.deployToSecondary }}
-#     appName: $(APIName)
-#     appProject: GC
-#     sqlProject: TRS
-#     sbProject: TRE
-#     appInstanceNumber: $(nc-region-id)02
-#     buildProjects: 'src/$(APIName)/$(APIName).csproj'
-#     publishProject: 'src/$(APIName)/$(APIName).csproj'
-#     publishArguments: '--configuration Release'
-#     runHealthCheck: false
-#     setupSlotKeyVaultAccess: true
-#     deployDevSlot: ${{ parameters.deployDevSlot }}
-#     appSettings: >-
-#       -KeyVaultEndpoint "https://$(Environment.Name)TRD$(nc-function-infrastructure)$(nc-resource-keyvault)1001.vault.azure.net/" 
-#       -enableAppConfigServer true
-#       -AddressApi:BaseUrl "https://$(internalAPIMUrl)/trade-address-api/v1/"
-#       -TradePlatform:ServiceBusConnectionString "$(serviceBusNamespace)"
-#       -TradePlatform:ServiceBusName "defra.trade.sus.remos.signup"
-#       -ServiceBusEnvironment "WebApp"
-#     connectionStrings: '[{"name": "sql_db", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-remos-signup;Authentication=Active Directory Managed Identity;", "type": "SQLAzure", "slotSetting": false}]'
-#     setupMiUser: true
-#     runSonarScan: true
-#     runVulnerabilityScan: false
-#     sonarExclusionPaths: 'src/*.Api*/**, src/Defra.Trade.ReMoS.AssuranceService.API/Program.cs'
-#     skipBuildTests: true
-#     qualityGate: ${{ parameters.qualityGate }}
-#     codeGeneration:
-#       ApiClientName: 'REMOS'
-#       ApiVersion: 'v1'
-#       Version: ${{ parameters.libraryVersion }}
-#       runClientGeneration: ${{ parameters.runCodeGeneration }}
-#     publishAPIMApi: 
-#       apiConfig: '**/api-config/trade-remos-api.yml'
-#       apiProjectName: '$(APIName)'
-#       apiTemplate: 'trade-remos-api'
+extends:
+  template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
+  parameters:
+    forceDevDeploy: ${{ parameters.forceDevDeploy }}
+    deployToSecondary: ${{ parameters.deployToSecondary }}
+    appName: $(APIName)
+    appProject: GC
+    sqlProject: TRS
+    sbProject: TRE
+    appInstanceNumber: $(nc-region-id)02
+    buildProjects: '**/*Api.csproj'
+    publishProject: '**/*Api.csproj'
+    publishArguments: '--configuration Release'
+    runHealthCheck: false
+    setupSlotKeyVaultAccess: true
+    deployDevSlot: ${{ parameters.deployDevSlot }}
+    appSettings: >-
+      -KeyVaultEndpoint "https://$(Environment.Name)TRD$(nc-function-infrastructure)$(nc-resource-keyvault)1001.vault.azure.net/" 
+      -enableAppConfigServer true
+      -AddressApi:BaseUrl "https://$(internalAPIMUrl)/trade-address-api/v1/"
+      -TradePlatform:ServiceBusConnectionString "$(serviceBusNamespace)"
+      -TradePlatform:ServiceBusName "defra.trade.sus.remos.signup"
+      -ServiceBusEnvironment "WebApp"
+    connectionStrings: '[{"name": "sql_db", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-remos-signup;Authentication=Active Directory Managed Identity;", "type": "SQLAzure", "slotSetting": false}]'
+    setupMiUser: true
+    runSonarScan: true
+    runVulnerabilityScan: false
+    sonarExclusionPaths: 'src/*.Api*/**, src/Defra.Trade.ReMoS.AssuranceService.API/Program.cs'
+    skipBuildTests: true
+    qualityGate: ${{ parameters.qualityGate }}
+    codeGeneration:
+      ApiClientName: 'REMOS'
+      ApiVersion: 'v1'
+      Version: ${{ parameters.libraryVersion }}
+      runClientGeneration: ${{ parameters.runCodeGeneration }}
+    publishAPIMApi: 
+      apiConfig: '**/api-config/trade-remos-api.yml'
+      apiProjectName: '$(APIName)'
+      apiTemplate: 'trade-remos-api'
