@@ -76,16 +76,6 @@ variables:
   APIName: Defra.Trade.ReMoS.AssuranceService.API
   UseProductionData: $[ne(variables['environment'], 'dev')]
 
-# steps:
-# - task: PowerShell@2
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       # Original path
-#       Write-Output "$(Build.Repository.Provider)-$(Build.Repository.Name)"
-#   continueOnError: true  
-# # Write-Host "$(Build.SourcesDirectory)/$(Build.Repository.Name)/${{ parameters.buildProjects }}"
-
 extends:
   template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
   parameters:
@@ -97,8 +87,8 @@ extends:
     sbProject: TRE
     appInstanceNumber: $(nc-region-id)02
     provider: '$(Build.Repository.Provider)'
-    buildProjects: 'src/$(APIName)/$(APIName).csproj' #'**/*Api.csproj'
-    publishProject: 'src/$(APIName)/$(APIName).csproj' #'**/*Api.csproj'
+    buildProjects: 'src/$(APIName)/$(APIName).csproj'
+    publishProject: 'src/$(APIName)/$(APIName).csproj'
     publishArguments: '--configuration Release'
     runHealthCheck: false
     setupSlotKeyVaultAccess: true
