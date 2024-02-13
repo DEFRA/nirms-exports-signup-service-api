@@ -55,11 +55,11 @@ parameters:
     type: boolean
     default: false
 
-trigger:
+trigger: 
   batch: true
   branches:
     include:
-    - '*'
+    - none
   paths:
     include:
     - src/Defra.Trade.ReMoS.AssuranceService.API/*
@@ -70,7 +70,7 @@ resources:
     - repository: PipelineCommon
       name: DEFRA-TRD/Defra.TRD.Pipeline.Common
       type: git
-      ref: pp/test-paths-github-repos #master
+      ref: master #pp/test-paths-github-repos
 
 variables:
   APIName: Defra.Trade.ReMoS.AssuranceService.API
