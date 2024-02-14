@@ -70,7 +70,7 @@ resources:
     - repository: PipelineCommon
       name: DEFRA-TRD/Defra.TRD.Pipeline.Common
       type: git
-      ref: pp/update-github-repo-paths #master #pp/test-paths-github-repos
+      ref: pp/update-github-repo-paths #master 
 
 variables:
   APIName: Defra.Trade.ReMoS.AssuranceService.API
