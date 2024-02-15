@@ -70,7 +70,11 @@ resources:
     - repository: PipelineCommon
       name: DEFRA-TRD/Defra.TRD.Pipeline.Common
       type: git
-      ref: pp/update-github-repo-paths #master 
+      ref: master
+    - repository: Self
+      name: DEFRA/nirms-exports-signup-service-api
+      type: git
+      ref: dev    
 
 variables:
   APIName: Defra.Trade.ReMoS.AssuranceService.API
