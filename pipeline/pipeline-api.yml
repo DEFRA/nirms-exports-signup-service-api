@@ -65,12 +65,12 @@ trigger:
     - src/Defra.Trade.ReMoS.AssuranceService.API/*
     - test/*
 
-# resources:
-#   repositories:
-#     - repository: PipelineCommon
-#       name: DEFRA-TRD/Defra.TRD.Pipeline.Common
-#       type: git
-#       ref: pp/update-github-repo-paths #master 
+resources:
+  repositories:
+    - repository: PipelineCommon
+      name: DEFRA-TRD/Defra.TRD.Pipeline.Common
+      type: git
+      ref: pp/update-github-repo-paths #master 
 
 variables:
   APIName: Defra.Trade.ReMoS.AssuranceService.API
