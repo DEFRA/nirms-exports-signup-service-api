@@ -71,7 +71,7 @@ resources:
       name: DEFRA-TRD/Defra.TRD.Pipeline.Common
       type: git
       ref: pp/new-changes #master
-    - repository: Self
+    - repository: GithuRepo
       name: DEFRA/nirms-exports-signup-service-api
       type: github
       ref: dev 
