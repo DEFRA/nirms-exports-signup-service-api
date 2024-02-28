@@ -1,0 +1,78 @@
+version: 0.0.1
+apimServiceName: "#{{ Environment.Name }}TRA#{{ nc-function-infrastructure }}#{{ nc-resource-apimanagement }}1002"
+apiVersionSets:
+  - id: trade-remos-api-dev
+    displayName: REMOS API DEV
+    description: Development REMOS APIs
+    versioningScheme: Segment
+  - id: trade-remos-api
+    displayName: REMOS API
+    description: REMOS APIs
+    versioningScheme: Segment
+apis:
+  - name: trade-remos-api-v1-dev
+    type: http
+    displayName: REMOS API Dev
+    description: REMOS APIs.
+    serviceUrl: https://defra.mock
+    openApiSpec: v1\swagger.json
+    policy: policies\apiPolicyHeadersMock.xml
+    suffix: trade-remos/dev
+    subscriptionRequired: true
+    apiVersion: v1
+    apiVersionDescription: Version 1 Dev APIs
+    apiVersionSetId: trade-remos-api-dev
+    products: trd-dev
+    authenticationSettings:
+      oAuth2:
+        authorizationServerId: OAuth-Server
+      subscriptionKeyRequired: true
+    diagnostic:
+      name: applicationinsights
+      alwaysLog: allErrors
+      loggerId: "#{{ Environment.Name }}TRD#{{ nc-function-infrastructure }}#{{ nc-resource-appinsights }}1001"
+      sampling:
+        samplingType: fixed
+        percentage: 100
+      enableHttpCorrelationHeaders: true
+  - name: trade-remos-api-v1
+    type: http
+    displayName: REMOS API V1
+    description: REMOS APIs V1.
+    serviceUrl: "https://#{{ Environment.Name }}GC#{{ nc-function-web }}#{{ nc-resource-webapp }}1002.azurewebsites.net/"
+    openApiSpec: v1\swagger.json
+    policy: policies\apiPolicyHeaders.xml
+    suffix: trade-remos
+    subscriptionRequired: true
+    apiVersion: v1
+    apiVersionDescription: Version 1 Live APIs
+    apiVersionSetId: trade-remos-api
+    products: trd-prod
+    authenticationSettings:
+      oAuth2:
+        authorizationServerId: OAuth-Server
+      subscriptionKeyRequired: true
+    diagnostic:
+      name: applicationinsights
+      alwaysLog: allErrors
+      loggerId: "#{{ Environment.Name }}TRD#{{ nc-function-infrastructure }}#{{ nc-resource-appinsights }}1001"
+      sampling:
+        samplingType: fixed
+        percentage: 100
+      enableHttpCorrelationHeaders: true
+    dependsOn: trade-remos-api-v1-dev    
+templateParameters:
+    - name: secondaryServiceUrl
+      value: "https://#{{ Environment.Name }}GC#{{ nc-function-web }}#{{ nc-resource-webapp }}1202.azurewebsites.net/"
+    - name: aspClientId
+      reference:
+        keyVault:
+          id: "/subscriptions/#{{ subscriptionId }}/resourceGroups/#{{ Environment.Name }}TRD#{{ nc-function-infrastructure }}#{{ nc-resource-resourcegroup }}1001/providers/Microsoft.KeyVault/vaults/#{{ Environment.Name }}TRD#{{ nc-function-infrastructure }}#{{ nc-resource-keyvault }}1001"
+        secretName: "GCWEBAS1002-OAuth-ClientId"      
+    - name: roles
+      values: 
+        roleTradeRemosRead: "#{{ roleTradeRemosRead }}"
+        roleTradeRemosUpdate: "#{{ roleTradeRemosUpdate }}"
+outputLocation: publish-templates
+linked: false
+baseFileName: trade-remos-api
