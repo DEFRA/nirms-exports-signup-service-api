@@ -59,8 +59,7 @@ trigger:
   batch: true
   branches:
     include:
-    - 'master'
-    - 'dev'
+    - '*'
   paths:
     include:
     - src/Defra.Trade.ReMoS.AssuranceService.API/*
@@ -75,7 +74,7 @@ resources:
 
 variables:
   APIName: Defra.Trade.ReMoS.AssuranceService.API
-  UseProductionData: $[ne(variables['environment'], 'dev')]
+  UseProductionData: $[ne(variables['environment'], 'dev')] 
 
 extends:
   template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
@@ -87,8 +86,9 @@ extends:
     sqlProject: TRS
     sbProject: TRE
     appInstanceNumber: $(nc-region-id)02
-    buildProjects: 'src\$(APIName)\$(APIName).csproj'
-    publishProject: 'src\$(APIName)\$(APIName).csproj'
+    provider: '$(Build.Repository.Provider)'
+    buildProjects: '**/*Api.csproj'
+    publishProject: '**/*Api.csproj'
     publishArguments: '--configuration Release'
     runHealthCheck: false
     setupSlotKeyVaultAccess: true
