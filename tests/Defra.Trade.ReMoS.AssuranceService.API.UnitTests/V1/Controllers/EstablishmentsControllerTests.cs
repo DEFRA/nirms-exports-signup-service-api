@@ -356,7 +356,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
                 .ReturnsAsync(location);
 
             //act
-            var result = await systemUnderTest.UpdateLogisticsLocationSelfServeAsync(Guid.NewGuid(), GetLogisticsLocation());
+            var result = await systemUnderTest.UpdateLogisticsLocationSelfServeAsync(Guid.NewGuid(), location);
 
             //assert
             result.Should().BeEquivalentTo(expected);
