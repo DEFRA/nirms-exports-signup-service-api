@@ -272,7 +272,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         }
 
         [FeatureGate(FeatureFlags.SelfServeMvpPlus)]
-        private string? BuildSelfServeUpdateEstablishmentMessage(TradeParty? tradeParty, LogisticsLocation? establishment)
+        private static string? BuildSelfServeUpdateEstablishmentMessage(TradeParty? tradeParty, LogisticsLocation? establishment)
         {
             var selfServeMessagePayload = JsonSerializer.Serialize(new SelfServeUpdateEstablishmentMessage
             {
@@ -294,7 +294,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         }
 
         [FeatureGate(FeatureFlags.SelfServeMvpPlus)]
-        private string? BuildSelfServeAddEstablishmentMessage(TradeParty? tradeParty, LogisticsLocation? establishment)
+        private static string? BuildSelfServeAddEstablishmentMessage(TradeParty? tradeParty, LogisticsLocation? establishment)
         {
             var selfServeMessagePayload = JsonSerializer.Serialize(new SelfServeAddEstablishmentMessage
             {

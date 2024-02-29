@@ -342,6 +342,27 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         }
 
         [Test]
+        public async Task UpdateLogisticsLocationSelfServeAsync_Returns_Success_For_Update()
+        {
+            //arrange
+            var location = GetLogisticsLocation();
+            location.ApprovalStatus = Domain.Enums.LogisticsLocationApprovalStatus.Removed;
+            var expected = systemUnderTest.NoContent();
+            _mockEstablishmentsService
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .ReturnsAsync(false);
+            _mockEstablishmentsService
+                .Setup(x => x.UpdateLogisticsLocationSelfServeAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
+                .ReturnsAsync(location);
+
+            //act
+            var result = await systemUnderTest.UpdateLogisticsLocationSelfServeAsync(Guid.NewGuid(), GetLogisticsLocation());
+
+            //assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
         public async Task UpdateEstablishment_ReturnsBadRequest_If_Establishment_Exists()
         {
             //arrange
