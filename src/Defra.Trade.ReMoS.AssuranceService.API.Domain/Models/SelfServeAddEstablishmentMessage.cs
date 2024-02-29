@@ -18,12 +18,12 @@ public record TradePartyWithLogicsLocationData
 [ExcludeFromCodeCoverage]
 public class SelfServeUpdateEstablishmentMessage
 {
-    public TradePartyWithLogicsLocationUpdateData? TradePartyWithLogicsLocationUpdateData { get; set; }
+    public TradePartyWithLogicsLocationUpdateData? TradeParty { get; set; }
 }
 [ExcludeFromCodeCoverage]
 public record TradePartyWithLogicsLocationUpdateData
 {
     public Guid Id { get; init; }
     public Guid OrgId { get; init; }
-    public LogisticsLocationDataForUpdate? LogisticsLocationStatusUpdate { get; init; }
+    public LogisticsLocationDataForUpdate? LogisticsLocation { get; init; }
 }
