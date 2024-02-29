@@ -7,6 +7,7 @@ using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Constants;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
+using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
@@ -227,49 +228,101 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             }
 
             var partyId = (Guid)logisticsLocation.TradePartyId!;
-            await SendSelfServeApplicationAsync(partyId, logisticsLocation.Id);
-            
+
+            if (logisticsLocation.ApprovalStatus == LogisticsLocationApprovalStatus.Removed)
+            {
+                await SendSelfServeApplicationAsync(partyId, logisticsLocation.Id, "update");
+                return logisticsLocation;
+            }
+
+            await SendSelfServeApplicationAsync(partyId, logisticsLocation.Id, "add");
             return logisticsLocation;
+
         }
 
         [FeatureGate(FeatureFlags.SelfServeMvpPlus)]
-        private async Task SendSelfServeApplicationAsync(Guid tradePartyId, Guid establishmentId)
+        private async Task SendSelfServeApplicationAsync(Guid tradePartyId, Guid establishmentId, string addOrUpdate)
         {
             var tradeParty = await _tradePartyRepository.FindTradePartyByIdAsync(tradePartyId);
             var establishment = await _establishmentRepository.GetLogisticsLocationByIdAsync(establishmentId);
             try
             {
-                var selfServeMessagePayload = JsonSerializer.Serialize(new SelfServeAddEstablishmentMessage
+                string? selfServeMessagePayload;
+                switch (addOrUpdate)
                 {
-                    TradePartyWithLogicsLocationData = new TradePartyWithLogicsLocationData
-                    {
-                        Id = tradeParty!.Id,
-                        OrgId = tradeParty!.OrgId,
-
-                        LogisticsLocation = new LogisticsLocationData
-                        {
-                            Id = establishment!.Id,
-                            Name = establishment!.Name,
-                            EmailAddress = establishment!.Email,
-                            TradePartyId = tradeParty!.Id,
-                            RemosEstablishmentSchemeNumber = establishment!.RemosEstablishmentSchemeNumber,
-                            Address = new AddressData
-                            {
-                                LineOne = establishment.Address?.LineOne,
-                                LineTwo = establishment.Address?.LineTwo,
-                                PostCode = establishment.Address?.PostCode,
-                                CityName = establishment.Address?.CityName,
-                                County = establishment.Address?.County,
-                            }
-                        }
-                    }
-                });
-                await SendtoServiceBus(selfServeMessagePayload, "sus.remos.establishment.create", tradeParty!.Id, "3", "Created");
+                    case "add":
+                        selfServeMessagePayload = BuildSelfServeAddEstablishmentMessage(tradeParty, establishment);
+                        if(!string.IsNullOrEmpty(selfServeMessagePayload)) 
+                            await SendtoServiceBus(selfServeMessagePayload, "sus.remos.establishment.create", tradePartyId, "3", "Created");
+                        break;
+                    case "update":
+                        selfServeMessagePayload = BuildSelfServeUpdateEstablishmentMessage(tradeParty, establishment);
+                        if (!string.IsNullOrEmpty(selfServeMessagePayload))
+                            await SendtoServiceBus(selfServeMessagePayload, "sus.remos.establishment.update", tradePartyId, "4", "Completed");
+                        break;
+                    default:
+                        break;
+                }
+                
             }
             catch (Exception ex)
             {
                 throw new InvalidOperationException(ex.Message);
             }
+        }
+
+        [FeatureGate(FeatureFlags.SelfServeMvpPlus)]
+        private string? BuildSelfServeUpdateEstablishmentMessage(TradeParty? tradeParty, LogisticsLocation? establishment)
+        {
+            var selfServeMessagePayload = JsonSerializer.Serialize(new SelfServeUpdateEstablishmentMessage
+            {
+                TradePartyWithLogicsLocationUpdateData = new TradePartyWithLogicsLocationUpdateData
+                {
+                    Id = tradeParty!.Id,
+                    OrgId = tradeParty!.OrgId,
+                    LogisticsLocationStatusUpdate = new LogisticsLocationDataForUpdate
+                    {
+                        Id = establishment!.Id,
+                        TradePartyId = tradeParty!.Id,
+                        InspectionLocationId = establishment.InspectionLocationId,
+                        Status = establishment.ApprovalStatus.ToString(),
+                    }
+                }
+            });
+
+            return selfServeMessagePayload;
+        }
+
+        [FeatureGate(FeatureFlags.SelfServeMvpPlus)]
+        private string? BuildSelfServeAddEstablishmentMessage(TradeParty? tradeParty, LogisticsLocation? establishment)
+        {
+            var selfServeMessagePayload = JsonSerializer.Serialize(new SelfServeAddEstablishmentMessage
+            {
+                TradePartyWithLogicsLocationData = new TradePartyWithLogicsLocationData
+                {
+                    Id = tradeParty!.Id,
+                    OrgId = tradeParty!.OrgId,
+
+                    LogisticsLocation = new LogisticsLocationData
+                    {
+                        Id = establishment!.Id,
+                        Name = establishment!.Name,
+                        EmailAddress = establishment!.Email,
+                        TradePartyId = tradeParty!.Id,
+                        RemosEstablishmentSchemeNumber = establishment!.RemosEstablishmentSchemeNumber,
+                        Address = new AddressData
+                        {
+                            LineOne = establishment.Address?.LineOne,
+                            LineTwo = establishment.Address?.LineTwo,
+                            PostCode = establishment.Address?.PostCode,
+                            CityName = establishment.Address?.CityName,
+                            County = establishment.Address?.County,
+                        }
+                    }
+                }
+            });
+
+            return selfServeMessagePayload;
         }
 
         private async Task SendtoServiceBus(string payload, string subject, Guid tradePartyId, string schemaVersion = "3", string status = "Created")

@@ -1,10 +1,4 @@
-﻿using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 
@@ -19,4 +13,17 @@ public record TradePartyWithLogicsLocationData
     public Guid Id { get; init; }
     public Guid OrgId { get; init; }
     public LogisticsLocationData? LogisticsLocation { get; init; }
+}
+
+[ExcludeFromCodeCoverage]
+public class SelfServeUpdateEstablishmentMessage
+{
+    public TradePartyWithLogicsLocationUpdateData? TradePartyWithLogicsLocationUpdateData { get; set; }
+}
+[ExcludeFromCodeCoverage]
+public record TradePartyWithLogicsLocationUpdateData
+{
+    public Guid Id { get; init; }
+    public Guid OrgId { get; init; }
+    public LogisticsLocationDataForUpdate? LogisticsLocationStatusUpdate { get; init; }
 }
