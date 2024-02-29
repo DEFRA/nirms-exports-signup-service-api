@@ -241,7 +241,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             {
                 var selfServeMessagePayload = JsonSerializer.Serialize(new SelfServeAddEstablishmentMessage
                 {
-                    TradePartyWithLogicsLocationData = new TradePartyWithLogicsLocationData
+                    TradeParty = new TradePartyWithLogicsLocationData
                     {
                         Id = tradeParty!.Id,
                         OrgId = tradeParty!.OrgId,
