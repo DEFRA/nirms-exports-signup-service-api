@@ -1,13 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
+﻿namespace Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 
 public class SelfServeAddEstablishmentMessage
 {
     public TradePartyWithLogicsLocationData? TradeParty { get; set; }
 }
 
-[ExcludeFromCodeCoverage]
 public record TradePartyWithLogicsLocationData
 {
     public Guid Id { get; init; }
@@ -15,12 +12,11 @@ public record TradePartyWithLogicsLocationData
     public LogisticsLocationData? LogisticsLocation { get; init; }
 }
 
-[ExcludeFromCodeCoverage]
 public class SelfServeUpdateEstablishmentMessage
 {
     public TradePartyWithLogicsLocationUpdateData? TradeParty { get; set; }
 }
-[ExcludeFromCodeCoverage]
+
 public record TradePartyWithLogicsLocationUpdateData
 {
     public Guid Id { get; init; }

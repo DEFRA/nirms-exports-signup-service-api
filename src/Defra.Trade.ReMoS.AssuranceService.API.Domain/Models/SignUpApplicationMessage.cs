@@ -25,7 +25,6 @@ public record TradePartyData
     public ICollection<LogisticsLocationData>? LogisticsLocations { get; init; }
 }
 
-[ExcludeFromCodeCoverage]
 public record LogisticsLocationData
 {
     public Guid Id { get; init; }
@@ -36,7 +35,6 @@ public record LogisticsLocationData
     public AddressData? Address { get; init; }
 }
 
-[ExcludeFromCodeCoverage]
 public record AddressData
 {
     public string? LineOne { get; init; }
@@ -46,7 +44,6 @@ public record AddressData
     public string? County {  get; init; }
 }
 
-[ExcludeFromCodeCoverage]
 public record LogisticsLocationDataForUpdate
 {
     public Guid Id { get; init; }
