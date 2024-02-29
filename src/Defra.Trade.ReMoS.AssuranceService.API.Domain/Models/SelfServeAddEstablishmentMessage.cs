@@ -4,7 +4,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 
 public class SelfServeAddEstablishmentMessage
 {
-    public TradePartyWithLogicsLocationData? TradePartyWithLogicsLocationData { get; set; }
+    public TradePartyWithLogicsLocationData? TradeParty { get; set; }
 }
 
 [ExcludeFromCodeCoverage]
