@@ -10,12 +10,13 @@ trigger:
   batch: true
   branches:
     include:
-      - '*'
+      - 'dev'
   paths:
     include:
       - src/Defra.Trade.ReMoS.AssuranceService.API.Data/*
       - src/Defra.Trade.ReMoS.AssuranceService.API.Data/Persistence/*
       - pipeline/build-sql.yaml
+  pr: none
 
 resources:
   repositories:
