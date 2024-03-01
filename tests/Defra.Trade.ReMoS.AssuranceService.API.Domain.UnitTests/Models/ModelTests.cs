@@ -1,4 +1,5 @@
 ﻿using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
+using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 
@@ -92,6 +93,82 @@ public class ModelTests
         message.TradeParty.LogisticsLocation.RemosEstablishmentSchemeNumber.Should().Be(rmsNumber);
         message.TradeParty.LogisticsLocation.TradePartyId.Should().Be(tradePartyId);
         message.TradeParty.LogisticsLocation.Address.Should().Be(tradeAddress);
+
+    }
+
+    [Test]
+    public void SignUpApplicationMessage_SetToValidValues()
+    {
+        // arrange
+        var tradePartId = Guid.NewGuid();
+        var orgId = Guid.NewGuid();
+        var fboNumber = "TestFBO1234";
+        var phrNumber = "Testphr1234";
+        var countryName = "Test country";
+        var rmsNumber = "12AB";
+        var tcSIgnDate = DateTime.UtcNow;
+        var susSUbmittedBy = Guid.NewGuid();
+        
+        var tradeContact = new TradeContact 
+        {
+            Id = Guid.NewGuid(),
+            TradePartyId = tradePartId,
+            Email = "sd~sd.com",
+            IsAuthorisedSignatory = false,
+            LastModifiedDate = DateTime.UtcNow,
+            ModifiedBy = susSUbmittedBy,
+            PersonName = "Test person",
+            Position = "Sales rep",
+            SubmittedDate = DateTime.UtcNow,
+            TelephoneNumber = "0118 123 1234",
+        };
+
+        var authSignatory = new AuthorisedSignatory 
+        {
+            Id = Guid.NewGuid(),
+            TradePartyId = tradePartId,
+            EmailAddress = "sd~sd.com",
+            LastModifiedDate = DateTime.UtcNow,
+            ModifiedBy = susSUbmittedBy,
+            Name = "Test person",
+            Position = "Sales rep",
+            SubmittedDate = DateTime.UtcNow,
+        };
+
+        ICollection<LogisticsLocationData>? loctions = new List<LogisticsLocationData> 
+        {
+            new LogisticsLocationData {Id = Guid.NewGuid(), TradePartyId = tradePartId, EmailAddress = "loc@loc.com", Name = "Test loc", RemosEstablishmentSchemeNumber = rmsNumber},
+        };
+
+        // act
+        var message = new SignUpApplicationMessage
+        {
+            TradeParty = new TradePartyData
+            {
+                Id = tradePartId,
+                OrgId = orgId,
+                FboNumber = fboNumber,
+                CountryName = countryName,
+                PhrNumber = phrNumber,
+                RemosBusinessSchemeNumber = rmsNumber,
+                TermsAndConditionsSignedDate = tcSIgnDate,
+                SignUpRequestSubmittedBy = susSUbmittedBy,
+                TradeContact = tradeContact,
+                AuthorisedSignatory = authSignatory,
+                LogisticsLocations = loctions,
+
+            }
+        };
+
+        // assert
+        message.TradeParty.Id.Should().Be(tradePartId);
+        message.TradeParty.OrgId.Should().Be(orgId);
+        message.TradeParty.FboNumber.Should().Be(fboNumber);
+        message.TradeParty.PhrNumber.Should().Be(phrNumber);
+        message.TradeParty.CountryName.Should().Be(countryName);
+        message.TradeParty.RemosBusinessSchemeNumber.Should().Be(rmsNumber);
+        message.TradeParty.TermsAndConditionsSignedDate.Should().Be(tcSIgnDate);
+        message.TradeParty.SignUpRequestSubmittedBy.Should().Be(susSUbmittedBy);
 
     }
 }

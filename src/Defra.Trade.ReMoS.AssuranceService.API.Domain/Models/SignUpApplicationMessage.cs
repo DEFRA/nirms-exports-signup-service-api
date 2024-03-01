@@ -3,13 +3,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 
-[ExcludeFromCodeCoverage]
 public record SignUpApplicationMessage
 {
     public TradePartyData? TradeParty { get; init; }
 }
 
-[ExcludeFromCodeCoverage]
 public record TradePartyData
 {
     public Guid Id { get; init; }
