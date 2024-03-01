@@ -734,4 +734,19 @@ public class EstablishmentsServiceTests
         result.Should().NotBeNull();
         result.Should().BeOfType<LogisticsLocationDto>();
     }
+
+    [Test]
+    public async Task AddLogisticsLocationAsync_ReturnsNull_IfTradePartyDoesNotExist()
+    {
+        // arrange
+        _mockTradePartyRepository
+           .Setup(action => action.TradePartyExistsAsync(It.IsAny<Guid>()))
+           .ReturnsAsync(false);
+
+        //Act
+        var result = await _sut!.AddLogisticsLocationAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>());
+
+        //Assert
+        result.Should().BeNull();
+    }
 }
