@@ -29,7 +29,7 @@ public class TradePartiesController : ControllerBase
     }
 
     /// <summary>
-    /// Gets all trade parties
+    /// Gets all trade parties in the db
     /// </summary>
     /// <returns></returns>
     [HttpGet(Name = "GetTradePartiesAsync")]
