@@ -7,6 +7,7 @@ using Defra.Trade.ReMoS.AssuranceService.API.Core.Services;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
+using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -680,6 +681,34 @@ public class EstablishmentsServiceTests
             Id = Guid.NewGuid(),
             Address = new TradeAddressDto { Id = Guid.Empty },
             IsRemoved = true
+        };
+        _mockEstablishmentRepository.Setup(
+            action => action.LogisticsLocationAlreadyExists(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<Guid>()))
+            .Returns(Task.FromResult(false));
+
+        //Act
+        var result = await _sut!.EstablishmentAlreadyExists(logisticsLocationAddDto);
+
+        //Assert
+        result.Should().Be(false);
+    }
+
+    [TestCase(LogisticsLocationApprovalStatus.Rejected)]
+    [TestCase(LogisticsLocationApprovalStatus.Removed)]
+    public async Task EstablishmentAlreadyExists_ReturnsFalse_WhenStatus(LogisticsLocationApprovalStatus status)
+    {
+        //Arrange
+        var logisticsLocationAddDto = new LogisticsLocationDto
+        {
+            Name = "Test Name",
+            Id = Guid.NewGuid(),
+            Address = new TradeAddressDto { Id = Guid.Empty },
+            IsRemoved = false,
+            ApprovalStatus = status
         };
         _mockEstablishmentRepository.Setup(
             action => action.LogisticsLocationAlreadyExists(
