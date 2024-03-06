@@ -104,6 +104,7 @@ public class EstablishmentRepository : IEstablishmentRepository
             && loc.Address!.LineOne!.ToUpper() == addressLineOne.ToUpper()
             && loc.Address!.PostCode!.Replace(" ", "").ToUpper() == postcode!.Replace(" ", "").ToUpper()
             && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Rejected
+            && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Removed
             && !loc.IsRemoved);
         
         if (exceptThisLocationId != null) 

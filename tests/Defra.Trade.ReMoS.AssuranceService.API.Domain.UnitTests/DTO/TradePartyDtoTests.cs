@@ -52,6 +52,7 @@ public class TradePartyDtoTests
         tradeParty.Address = tradeAddress;
         tradeParty.TradeAddressId = tradeAddress.Id;
         tradeParty.Contact = tradeContact;
+        tradeParty.ApprovalStatus = Enums.TradePartyApprovalStatus.NotSignedUp;
 
         //Assert
         tradeParty.Id.Should().Be(Guid.Parse("c16eb7a7-2949-4880-b5d7-0405f4f7d188"));
@@ -69,5 +70,6 @@ public class TradePartyDtoTests
         tradeParty.Contact.Should().Be(tradeContact);
         tradeParty.Address.Should().Be(tradeAddress);
         tradeParty.TradeAddressId.Should().Be(tradeAddress.Id);
+        tradeParty.ApprovalStatus.Should().Be(Enums.TradePartyApprovalStatus.NotSignedUp);
     }
 }
