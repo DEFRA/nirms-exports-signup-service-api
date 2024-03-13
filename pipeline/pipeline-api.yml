@@ -70,7 +70,7 @@ resources:
     - repository: PipelineCommon
       name: DEFRA-TRD/Defra.TRD.Pipeline.Common
       type: git
-      ref: master
+      ref: pp/github-issues-fix #master
 
 variables:
   APIName: Defra.Trade.ReMoS.AssuranceService.API
@@ -86,7 +86,8 @@ extends:
     sqlProject: TRS
     sbProject: TRE
     appInstanceNumber: $(nc-region-id)02
-    provider: '$(Build.Repository.Provider)'
+    # provider: '$(Build.Repository.Provider)'
+    scr: GH
     buildProjects: '**/*Api.csproj'
     publishProject: '**/*Api.csproj'
     publishArguments: '--configuration Release'
