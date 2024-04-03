@@ -48,6 +48,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "policies", "policies", "{9F
 		apiPolicyHeadersMock.xml = apiPolicyHeadersMock.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{76B98143-8ED0-4850-994F-27FDE8D94307}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.Trade.ReMoS.AssuranceService.Shared", "Defra.Trade.ReMoS.AssuranceService.Shared\Defra.Trade.ReMoS.AssuranceService.Shared.csproj", "{DED72C36-4E98-49D3-9157-63082E8FEC53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +90,10 @@ Global
 		{2BEFD97B-829C-4412-9764-BE1145411F6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BEFD97B-829C-4412-9764-BE1145411F6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BEFD97B-829C-4412-9764-BE1145411F6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DED72C36-4E98-49D3-9157-63082E8FEC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DED72C36-4E98-49D3-9157-63082E8FEC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DED72C36-4E98-49D3-9157-63082E8FEC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DED72C36-4E98-49D3-9157-63082E8FEC53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +112,8 @@ Global
 		{EDB4B8A4-24F2-415E-BF73-FD7E2B57C308} = {B0681B4A-4263-45B5-A783-2F001CDB7D0B}
 		{FB099B60-17FD-4C90-9818-8C088E691A5E} = {B0681B4A-4263-45B5-A783-2F001CDB7D0B}
 		{9FF8C9FD-83C8-4757-8ED7-71CCB80315BD} = {ED84FA84-85CB-4AD4-A0AA-1DDC92105743}
+		{76B98143-8ED0-4850-994F-27FDE8D94307} = {B0681B4A-4263-45B5-A783-2F001CDB7D0B}
+		{DED72C36-4E98-49D3-9157-63082E8FEC53} = {76B98143-8ED0-4850-994F-27FDE8D94307}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1CE1BAE9-FBAE-43CC-B087-F27B1C5AEA40}
