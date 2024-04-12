@@ -1,6 +1,5 @@
 ﻿using Defra.Trade.Address.V1.ApiClient.Model;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;

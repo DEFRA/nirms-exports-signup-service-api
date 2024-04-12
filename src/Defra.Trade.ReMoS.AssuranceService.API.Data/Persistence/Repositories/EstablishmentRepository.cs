@@ -1,16 +1,9 @@
-﻿using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Configurations;
-using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Context;
+﻿using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Context;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
+using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Repositories;
 

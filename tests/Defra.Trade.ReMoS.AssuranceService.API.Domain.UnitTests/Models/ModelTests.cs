@@ -1,7 +1,6 @@
-﻿using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
+﻿using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
+using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Domain.UnitTests.Models;
 

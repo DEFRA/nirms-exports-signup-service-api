@@ -3,7 +3,6 @@ using Azure.Messaging.ServiceBus;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Profiles;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Services;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 using Microsoft.Extensions.Configuration;

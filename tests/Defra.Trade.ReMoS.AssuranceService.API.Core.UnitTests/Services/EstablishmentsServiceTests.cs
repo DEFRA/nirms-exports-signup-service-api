@@ -5,9 +5,7 @@ using Defra.Trade.Address.V1.ApiClient.Model;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Profiles;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Services;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -407,7 +405,7 @@ public class EstablishmentsServiceTests
             Name = "abc",
             TradePartyId = guid,
             Email = "contact@test.com",
-            ApprovalStatus = Domain.Enums.LogisticsLocationApprovalStatus.Rejected
+            ApprovalStatus = LogisticsLocationApprovalStatus.Rejected
         };
 
         var list = new List<LogisticsLocation> { logisticLocation, logisticLocationRejected };
@@ -734,7 +732,7 @@ public class EstablishmentsServiceTests
         {
             Id = Guid.NewGuid(),
             TradePartyId = Guid.NewGuid(),
-            ApprovalStatus = Domain.Enums.LogisticsLocationApprovalStatus.Removed,
+            ApprovalStatus = LogisticsLocationApprovalStatus.Removed,
         };
         var locationSavedInDb = new LogisticsLocation()
         {

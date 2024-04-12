@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Converters;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
+using Defra.Trade.ReMoS.AssuranceService.Shared.DTO;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Profiles;
 
