@@ -28,7 +28,7 @@
     </PackageReference>
 		<PackageReference Include="Defra.Trade.Common.Security" Version="2.0.5" />
 		<PackageReference Include="Defra.Trade.Common.Sql" Version="2.0.1" />
-		<PackageReference Include="Defra.Trade.ReMoS.AssuranceService.Shared" Version="2.2.20-pre-a" />
+		<PackageReference Include="Defra.Trade.ReMoS.AssuranceService.Shared" Version="2.3.0-pre-a" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9">
       <NoWarn>NU1701</NoWarn>
