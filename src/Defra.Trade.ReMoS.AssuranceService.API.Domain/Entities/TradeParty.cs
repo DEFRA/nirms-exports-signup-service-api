@@ -1,6 +1,4 @@
-﻿using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
-
-namespace Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
+﻿namespace Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 
 public class TradeParty
 {

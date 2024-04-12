@@ -1,9 +1,6 @@
 ﻿using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Constants;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using System.Net;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 

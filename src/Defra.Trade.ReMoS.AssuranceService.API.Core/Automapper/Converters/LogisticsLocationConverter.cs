@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Converters;

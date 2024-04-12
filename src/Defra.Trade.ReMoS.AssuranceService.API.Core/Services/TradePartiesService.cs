@@ -1,19 +1,14 @@
 ﻿using AutoMapper;
-using Azure.Core;
-using Azure.Identity;
 using Azure.Messaging.ServiceBus;
-using Defra.Trade.Common.Security.Authentication;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using Microsoft.FeatureManagement.Mvc;
-using Microsoft.FeatureManagement;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Constants;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 {

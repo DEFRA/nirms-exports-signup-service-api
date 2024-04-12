@@ -1,29 +1,20 @@
 ﻿using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 using Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers;
 
 public class TradePartiesControllerTests
 {
 
-    private TradePartiesController? systemUnderTest;
+    private TradePartiesController? _systemUnderTest;
     readonly Mock<ITradePartiesService> _mockTradePartiesService = new();
 
     [SetUp]
     public void Setup()
     {
-        systemUnderTest = new TradePartiesController(_mockTradePartiesService.Object);
+        _systemUnderTest = new TradePartiesController(_mockTradePartiesService.Object);
     }
 
     [Test]
@@ -31,11 +22,11 @@ public class TradePartiesControllerTests
     {
         // arrange
         var tradeParties = GenerateTradeParties();
-        var expected = systemUnderTest?.Ok(tradeParties);
+        var expected = _systemUnderTest?.Ok(tradeParties);
         _mockTradePartiesService.Setup(m => m.GetTradePartiesAsync().Result).Returns(tradeParties);
 
         // act
-        var result = await systemUnderTest!.GetTradePartiesAsync();
+        var result = await _systemUnderTest!.GetTradePartiesAsync();
 
         // assert
         result.Should().BeEquivalentTo(expected);
@@ -51,10 +42,10 @@ public class TradePartiesControllerTests
 
 
         // act
-        var result = await systemUnderTest!.GetTradePartiesAsync();
+        var result = await _systemUnderTest!.GetTradePartiesAsync();
 
         // assert
-        result.Should().BeEquivalentTo(systemUnderTest.BadRequest());
+        result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
     }
 
     [Test]
@@ -68,7 +59,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.GetTradePartyAsync(tradePartyId);
+        var result = await _systemUnderTest!.GetTradePartyAsync(tradePartyId);
 
         //Assert
         result.Should().BeOfType<ActionResult<TradePartyDto>>();
@@ -86,7 +77,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.GetTradePartyAsync(tradePartyId);
+        var result = await _systemUnderTest!.GetTradePartyAsync(tradePartyId);
 
         //Assert
         result.Should().BeOfType<ActionResult<TradePartyDto>>();
@@ -104,7 +95,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.GetTradePartyByDefraOrgId(orgId);
+        var result = await _systemUnderTest!.GetTradePartyByDefraOrgId(orgId);
 
         //Assert
         result.Should().BeOfType<ActionResult<TradePartyDto>>();
@@ -122,7 +113,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync((TradePartyDto)null!);
 
         //Act
-        var result = await systemUnderTest!.GetTradePartyByDefraOrgId(orgId);
+        var result = await _systemUnderTest!.GetTradePartyByDefraOrgId(orgId);
 
         //Assert
         result.Should().BeOfType<ActionResult<TradePartyDto>>();
@@ -139,7 +130,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.GetTradePartyByDefraOrgId(orgId);
+        var result = await _systemUnderTest!.GetTradePartyByDefraOrgId(orgId);
 
         //Assert
         result.Should().BeOfType<ActionResult<TradePartyDto>>();
@@ -156,7 +147,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.UpdateTradeParty(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradeParty(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -171,7 +162,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(value: null!);
 
         //Act
-        var result = await systemUnderTest!.UpdateTradeParty(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradeParty(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<NotFoundObjectResult>();
@@ -186,7 +177,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.UpdateTradeParty(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradeParty(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -202,7 +193,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.UpdateTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -217,7 +208,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(value: null!);
 
         //Act
-        var result = await systemUnderTest!.UpdateTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<NotFoundObjectResult>();
@@ -232,7 +223,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.UpdateTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -249,7 +240,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(value: null!);
 
         // Act
-        var result = await systemUnderTest!.AddTradePartyAddress(partyId, addressRequest);
+        var result = await _systemUnderTest!.AddTradePartyAddress(partyId, addressRequest);
 
         // Assert
         result.Should().BeOfType<NotFoundObjectResult>();
@@ -265,7 +256,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.AddTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradeAddressDto>());
+        var result = await _systemUnderTest!.AddTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradeAddressDto>());
 
         //Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -280,7 +271,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.AddTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradeAddressDto>());
+        var result = await _systemUnderTest!.AddTradePartyAddress(It.IsAny<Guid>(), It.IsAny<TradeAddressDto>());
 
         //Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -310,7 +301,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.UpdateTradePartyContact(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradePartyContact(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -325,7 +316,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(value: null!);
 
         //Act
-        var result = await systemUnderTest!.UpdateTradePartyContact(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradePartyContact(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<NotFoundObjectResult>();
@@ -340,7 +331,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.UpdateTradePartyContact(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradePartyContact(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -355,7 +346,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.UpdateTradePartyContactSelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradePartyContactSelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -371,7 +362,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.UpdateTradePartyContactSelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateTradePartyContactSelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -382,14 +373,14 @@ public class TradePartiesControllerTests
     {
         //Arrange
         var guid = Guid.NewGuid();
-        var expected = systemUnderTest?.CreatedAtRoute("GetTradePartyAsync", new { id = guid }, guid);
+        var expected = _systemUnderTest?.CreatedAtRoute("GetTradePartyAsync", new { id = guid }, guid);
         var tradePartyDTO = new TradePartyDto { Id = guid, PartyName = "partyname" };
         _mockTradePartiesService
             .Setup(action => action.AddTradePartyAsync(It.IsAny<TradePartyDto>()))
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.AddTradeParty(It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.AddTradeParty(It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeEquivalentTo(expected);
@@ -404,7 +395,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(value: null!);
 
         //Act
-        var result = await systemUnderTest!.AddTradeParty(It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.AddTradeParty(It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -419,7 +410,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.AddTradeParty(It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.AddTradeParty(It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -432,7 +423,7 @@ public class TradePartiesControllerTests
         _mockTradePartiesService.Setup(action => action.GetTradePartyAsync(It.IsAny<Guid>())).ReturnsAsync(value: null!);
 
         //Act
-        var result = await systemUnderTest!.GetTradePartyAsync(Guid.Empty);
+        var result = await _systemUnderTest!.GetTradePartyAsync(Guid.Empty);
 
         //Assert
         result.Result.Should().BeOfType<NotFoundObjectResult>();
@@ -448,7 +439,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.UpdateAuthorisedSignatory(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateAuthorisedSignatory(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -463,7 +454,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.UpdateAuthorisedSignatory(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateAuthorisedSignatory(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -478,7 +469,7 @@ public class TradePartiesControllerTests
             .ThrowsAsync(new Exception());
 
         //Act
-        var result = await systemUnderTest!.UpdateAuthorisedSignatorySelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateAuthorisedSignatorySelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<BadRequestObjectResult>();
@@ -494,7 +485,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(tradePartyDTO);
 
         //Act
-        var result = await systemUnderTest!.UpdateAuthorisedSignatorySelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateAuthorisedSignatorySelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -509,7 +500,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(value: null!);
 
         //Act
-        var result = await systemUnderTest!.UpdateAuthorisedSignatory(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateAuthorisedSignatory(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<NotFoundObjectResult>();
@@ -524,7 +515,7 @@ public class TradePartiesControllerTests
             .ReturnsAsync(value: null!);
 
         //Act
-        var result = await systemUnderTest!.UpdateAuthorisedSignatorySelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
+        var result = await _systemUnderTest!.UpdateAuthorisedSignatorySelfServe(It.IsAny<Guid>(), It.IsAny<TradePartyDto>());
 
         //Assert
         result.Should().BeOfType<NotFoundObjectResult>();

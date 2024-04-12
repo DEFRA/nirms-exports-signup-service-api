@@ -1,12 +1,4 @@
-﻿using Defra.Trade.ReMoS.AssuranceService.API.Domain.Constants;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Microsoft.FeatureManagement.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.FeatureManagement.Mvc;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces
 {

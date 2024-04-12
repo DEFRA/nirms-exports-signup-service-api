@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
 using Defra.Trade.Address.V1.ApiClient.Model;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Profiles;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Core.UnitTests.Automapper.Profiles;
 
 public class TradeAddressApiProfilerTests
 {
-    private IMapper? mapper;
+    private IMapper? _mapper;
 
     [SetUp]
     public void Setup()
     {
         var config = new MapperConfiguration(cfg => cfg.AddProfile<TradeAddressApiProfiler>());
-        mapper = config.CreateMapper();
+        _mapper = config.CreateMapper();
     }
 
     [Test]
@@ -41,7 +40,7 @@ public class TradeAddressApiProfilerTests
         };
 
         // act
-        var result = mapper?.Map<TradeAddressAndBusinessNameDto>(source);
+        var result = _mapper?.Map<TradeAddressAndBusinessNameDto>(source);
 
         // assert
         result.Should().BeEquivalentTo(destination);
@@ -72,7 +71,7 @@ public class TradeAddressApiProfilerTests
         };
 
         // act
-        var result = mapper?.Map<TradeAddressAndBusinessNameDto>(source);
+        var result = _mapper?.Map<TradeAddressAndBusinessNameDto>(source);
 
         // assert
         result.Should().BeEquivalentTo(destination);
@@ -103,7 +102,7 @@ public class TradeAddressApiProfilerTests
         };
 
         // act
-        var result = mapper?.Map<TradeAddressAndBusinessNameDto>(source);
+        var result = _mapper?.Map<TradeAddressAndBusinessNameDto>(source);
 
         // assert
         result.Should().BeEquivalentTo(destination);
@@ -134,7 +133,7 @@ public class TradeAddressApiProfilerTests
         };
 
         // act
-        var result = mapper?.Map<TradeAddressAndBusinessNameDto>(source);
+        var result = _mapper?.Map<TradeAddressAndBusinessNameDto>(source);
 
         // assert
         result.Should().BeEquivalentTo(destination);
@@ -165,7 +164,7 @@ public class TradeAddressApiProfilerTests
         };
 
         // act
-        var result = mapper?.Map<TradeAddressAndBusinessNameDto>(source);
+        var result = _mapper?.Map<TradeAddressAndBusinessNameDto>(source);
 
         // assert
         result.Should().BeEquivalentTo(destination);
@@ -196,7 +195,7 @@ public class TradeAddressApiProfilerTests
         };
 
         // act
-        var result = mapper?.Map<TradeAddressAndBusinessNameDto>(source);
+        var result = _mapper?.Map<TradeAddressAndBusinessNameDto>(source);
 
         // assert
         result.Should().BeEquivalentTo(destination);
@@ -227,7 +226,7 @@ public class TradeAddressApiProfilerTests
         };
 
         // act
-        var result = mapper?.Map<TradeAddressAndBusinessNameDto>(source);
+        var result = _mapper?.Map<TradeAddressAndBusinessNameDto>(source);
 
         // assert
         result.Should().BeEquivalentTo(destination);
@@ -264,7 +263,7 @@ public class TradeAddressApiProfilerTests
         };
 
         // act
-        var result = mapper?.Map<TradeAddressAndBusinessNameDto>(source);
+        var result = _mapper?.Map<TradeAddressAndBusinessNameDto>(source);
 
         // assert
         result.Should().BeEquivalentTo(destination);

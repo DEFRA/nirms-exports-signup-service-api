@@ -1,12 +1,7 @@
 ﻿using AutoMapper;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using System;
-using System.Collections.Generic;
+using Defra.Trade.ReMoS.AssuranceService.Shared.DTO;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Converters;
 

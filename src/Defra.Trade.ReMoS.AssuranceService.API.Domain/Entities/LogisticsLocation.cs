@@ -1,9 +1,4 @@
-﻿using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 
