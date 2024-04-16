@@ -2,6 +2,7 @@
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
+using Microsoft.Extensions.Logging;
 using Moq;
 #pragma warning disable CS8602
 #pragma warning disable CS8629
@@ -12,12 +13,12 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
     {
         private EstablishmentsController? _systemUnderTest;
         readonly Mock<IEstablishmentsService> _mockEstablishmentsService = new();
-
+        protected Mock<ILogger<EstablishmentsController>> _mockLogger = new();
 
         [SetUp]
         public void Setup()
         {
-            _systemUnderTest = new EstablishmentsController(_mockEstablishmentsService.Object);
+            _systemUnderTest = new EstablishmentsController(_mockEstablishmentsService.Object, _mockLogger.Object);
         }
 
         [Test]

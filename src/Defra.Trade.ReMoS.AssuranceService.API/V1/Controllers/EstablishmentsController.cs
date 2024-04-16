@@ -14,15 +14,18 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 public class EstablishmentsController : ControllerBase
 {
     private readonly IEstablishmentsService _establishmentsService;
+    private readonly ILogger<EstablishmentsController> _logger;
 
     /// <summary>
     /// provides api endpoints for establishments
     /// </summary>
     /// <param name="establishmentsService"></param>
+    /// <param name="logger"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public EstablishmentsController(IEstablishmentsService establishmentsService)
+    public EstablishmentsController(IEstablishmentsService establishmentsService, ILogger<EstablishmentsController> logger)
     {
         _establishmentsService = establishmentsService ?? throw new ArgumentNullException(nameof(establishmentsService));
+        _logger = logger;
     }
 
     /// <summary>
@@ -36,6 +39,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> GetLogisticsLocationByIdAsync(Guid id)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationByIdAsync));
+
         LogisticsLocationDto? result;
         try
         {
@@ -63,6 +68,7 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> GetLogisticsLocationsByPostcodeAsync(string postcode)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationsByPostcodeAsync));
         IEnumerable<LogisticsLocationDto>? result;
         try
         {
@@ -92,6 +98,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(Guid tradePartyId, [FromQuery(Name = "isRejected")] bool isRejected)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationsForTradePartyAsync));
+
         IEnumerable<LogisticsLocationDto>? result;
         try
         {
@@ -119,6 +127,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> GetAllLogisticsLocationsAsync()
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetAllLogisticsLocationsAsync));
+
         IEnumerable<LogisticsLocationDto>? result;
         try
         {
@@ -146,6 +156,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public async Task<IActionResult> AddLogisticsLocationToTradePartyAsync(Guid tradePartyId, LogisticsLocationDto dto)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(AddLogisticsLocationToTradePartyAsync));
+
         LogisticsLocationDto? createdLocation;
 
         try
@@ -180,6 +192,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateLogisticsLocationAsync(Guid id, LogisticsLocationDto logiticsLocationRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(UpdateLogisticsLocationAsync));
+
         LogisticsLocationDto? establishmentDto;
         try
         {
@@ -212,6 +226,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<ActionResult> RemoveEstablishmentAsync(Guid id)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(RemoveEstablishmentAsync));
+
         try
         {
             if (!await _establishmentsService.RemoveLogisticsLocationAsync(id))
@@ -237,6 +253,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public IActionResult GetTradeAddressApiLocations(string postcode)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetTradeAddressApiLocations));
+
         List<AddressDto> result;
         try
         {
@@ -263,6 +281,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public IActionResult GetLogisticsLocationByUprn(string uprn)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationByUprn));
+
         LogisticsLocationDto? result;
         try
         {
@@ -292,6 +312,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateLogisticsLocationSelfServeAsync(Guid id, LogisticsLocationDto logiticsLocationRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(UpdateLogisticsLocationSelfServeAsync));
+
         LogisticsLocationDto? establishmentDto;
         try
         {
