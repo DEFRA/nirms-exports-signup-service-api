@@ -1,6 +1,7 @@
 ﻿using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers;
@@ -10,11 +11,12 @@ public class TradePartiesControllerTests
 
     private TradePartiesController? _systemUnderTest;
     readonly Mock<ITradePartiesService> _mockTradePartiesService = new();
+    protected Mock<ILogger<TradePartiesController>> _mockLogger = new();
 
     [SetUp]
     public void Setup()
     {
-        _systemUnderTest = new TradePartiesController(_mockTradePartiesService.Object);
+        _systemUnderTest = new TradePartiesController(_mockTradePartiesService.Object, _mockLogger.Object);
     }
 
     [Test]
