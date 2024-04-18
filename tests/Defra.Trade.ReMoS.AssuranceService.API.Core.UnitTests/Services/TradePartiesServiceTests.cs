@@ -3,10 +3,11 @@ using Azure.Messaging.ServiceBus;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Profiles;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Services;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
+using Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using Moq;
@@ -21,6 +22,7 @@ public class TradePartiesServiceTests
     private readonly Mock<IOptions<TradePlatform>> _mockTradePlatformConfig = new();
     private readonly Mock<IFeatureManager> _mockFeatureManager = new();
     private readonly Mock<ServiceBusClient> _mockServiceBusClient = new();
+    protected Mock<ILogger<TradePartiesService>> _mockLogger = new();
     private TradePartiesService? _sut;
 
     [SetUp]
@@ -41,7 +43,8 @@ public class TradePartiesServiceTests
             _mockEstablishmentRepository.Object,
             _mockTradePlatformConfig.Object,
             _mockFeatureManager.Object,
-            _mockServiceBusClient.Object);
+            _mockServiceBusClient.Object,
+            _mockLogger.Object);
     }
 
     [Test]

@@ -4,15 +4,10 @@ using Defra.Trade.Address.V1.ApiClient.Api;
 using Defra.Trade.Address.V1.ApiClient.Model;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Constants;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 using Microsoft.Extensions.Options;
-using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 

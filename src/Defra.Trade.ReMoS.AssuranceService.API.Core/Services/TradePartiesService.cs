@@ -1,19 +1,15 @@
 ﻿using AutoMapper;
-using Azure.Core;
-using Azure.Identity;
 using Azure.Messaging.ServiceBus;
-using Defra.Trade.Common.Security.Authentication;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using Microsoft.FeatureManagement.Mvc;
-using Microsoft.FeatureManagement;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Constants;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 {
@@ -25,6 +21,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         private readonly IOptions<TradePlatform> _tradePlatformIntegrationSettings;
         private readonly IFeatureManager _featureManager;
         private readonly ServiceBusClient _serviceBusClient;
+        private readonly ILogger<TradePartiesService> _logger;
 
         public TradePartiesService(
             ITradePartyRepository tradePartyRepository,
@@ -32,7 +29,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             IEstablishmentRepository establishmentRepository,
             IOptions<TradePlatform> tradePlatformIntegrationSettings,
             IFeatureManager featureManager,
-            ServiceBusClient serviceBusClient)
+            ServiceBusClient serviceBusClient,
+            ILogger<TradePartiesService> logger)
         {
             _tradePartyRepository = tradePartyRepository ?? throw new ArgumentNullException(nameof(tradePartyRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -40,10 +38,13 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             _tradePlatformIntegrationSettings = tradePlatformIntegrationSettings;
             _featureManager = featureManager;
             _serviceBusClient = serviceBusClient;
+            _logger = logger;
         }
 
         public async Task<TradePartyDto?> AddTradePartyAsync(TradePartyDto tradePartyRequest)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(AddTradePartyAsync));
+
             var tradeParty = _mapper.Map<TradeParty>(tradePartyRequest);
             tradeParty.CreatedDate = DateTime.UtcNow;
             tradeParty.LastUpdateDate = DateTime.UtcNow;
@@ -56,6 +57,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
         public async Task<IEnumerable<TradePartyDto>> GetTradePartiesAsync()
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(GetTradePartiesAsync));
+
             var tradeParties = await _tradePartyRepository.GetAllTradeParties();
             var tradePartyDtos = _mapper.Map<IEnumerable<TradePartyDto>>(tradeParties);
             return tradePartyDtos;
@@ -63,6 +66,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
         public async Task<TradePartyDto?> GetTradePartyAsync(Guid tradePartyId)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(GetTradePartyAsync));
+
             var tradeParty = await _tradePartyRepository
                 .GetTradePartyAsync(tradePartyId);
 
@@ -71,6 +76,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
         public async Task<TradePartyDto?> GetTradePartyByDefraOrgIdAsync(Guid orgId)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(GetTradePartyByDefraOrgIdAsync));
+
             var tradeParty = await _tradePartyRepository
                 .GetTradePartyByDefraOrgIdAsync(orgId);
 
@@ -79,6 +86,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
         public async Task<TradePartyDto?> UpdateTradePartyAsync(Guid tradePartyId, TradePartyDto tradePartyRequest)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(UpdateTradePartyAsync));
+
             var submittedApplication = tradePartyRequest.SignUpRequestSubmittedBy != Guid.Empty;
 
             TradeParty? tradeParty = await FindTradeParty(tradePartyId);
@@ -106,6 +115,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
         public async Task<TradePartyDto?> UpdateTradePartyAddressAsync(Guid tradePartyId, TradePartyDto tradePartyRequest)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(UpdateTradePartyAddressAsync));
+
             TradeParty? tradeParty = await FindTradeParty(tradePartyId);
             if (tradeParty == null)
                 return null;
@@ -119,6 +130,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
         public async Task<TradePartyDto?> AddTradePartyAddressAsync(Guid tradePartyId, TradeAddressDto tradeAddressRequest)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(AddTradePartyAddressAsync));
+
             TradeParty? tradeParty = await FindTradeParty(tradePartyId);
             if (tradeParty == null)
                 return null;
@@ -131,6 +144,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
         public async Task<TradePartyDto?> UpdateTradePartyContactAsync(Guid tradePartyId, TradePartyDto tradePartyRequest)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(UpdateTradePartyContactAsync));
+
             TradeParty? tradeParty = await FindTradeParty(tradePartyId);
             if (tradeParty == null)
             {
@@ -145,6 +160,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
         public async Task<TradePartyDto?> UpdateAuthorisedSignatoryAsync(Guid tradePartyId, TradePartyDto tradePartyRequest)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(UpdateAuthorisedSignatoryAsync));
+
             var tradeParty = await FindTradeParty(tradePartyId);
 
             if (tradeParty == null)
@@ -181,6 +198,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         [FeatureGate(FeatureFlags.SelfServe)]
         public async Task<TradePartyDto?> UpdateContactSelfServeAsync(Guid tradePartyId, TradePartyDto tradePartyRequest)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(UpdateContactSelfServeAsync));
+
             var tradeParty = await FindTradeParty(tradePartyId);
 
             if (tradeParty == null)
@@ -199,6 +218,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         [FeatureGate(FeatureFlags.SelfServe)]
         public async Task<TradePartyDto?> UpdateAuthRepSelfServeAsync(Guid tradePartyId, TradePartyDto tradePartyRequest)
         {
+            _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(UpdateAuthRepSelfServeAsync));
+
             var tradeParty = await FindTradeParty(tradePartyId);
 
             if (tradeParty == null)

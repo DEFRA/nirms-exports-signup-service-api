@@ -16,10 +16,13 @@
   <ItemGroup>
     <PackageReference Include="Defra.Trade.Common" Version="2.0.2" />
     <PackageReference Include="Defra.Trade.Common.Security" Version="2.0.5" />
+    <PackageReference Include="Defra.Trade.ReMoS.AssuranceService.Shared" Version="2.3.0-pre-a" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="4.0.0" />
     <PackageReference Include="System.Text.Json" Version="7.0.2" />
   </ItemGroup>
 

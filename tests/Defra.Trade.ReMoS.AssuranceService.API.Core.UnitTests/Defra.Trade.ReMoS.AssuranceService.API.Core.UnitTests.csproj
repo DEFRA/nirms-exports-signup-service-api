@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.1" />
+    <PackageReference Include="Defra.Trade.ReMoS.AssuranceService.Shared" Version="2.3.0-pre-a" />
     <PackageReference Include="FluentAssertions" Version="6.10.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9">
       <NoWarn>NU1701</NoWarn>

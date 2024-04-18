@@ -1,3 +1,3 @@
-global using NUnit;
-global using NUnit.Framework;
+global using Defra.Trade.ReMoS.AssuranceService.Shared.DTO;
 global using FluentAssertions;
+global using NUnit.Framework;

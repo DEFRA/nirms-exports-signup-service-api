@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Defra.Trade.Address.V1.ApiClient.Model;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
-using System.Diagnostics.CodeAnalysis;
+using Defra.Trade.ReMoS.AssuranceService.Shared.DTO;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -30,10 +28,9 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Converters
 
             var pattern2 = @".*(?=,\s" + source.ThroughfareName + ")";
             Match m2 = Regex.Match(source.Address, pattern2, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(60));
-
-            var houseNumber = 0;
             var ad = m2.Value.Split(", ");
-            if (int.TryParse(ad[^1], out houseNumber)) // house number
+
+            if (int.TryParse(ad[^1], out int houseNumber)) // house number
             {
                 for (int i = 1; i < ad.Length - 1; i++) // lineOne is everything after buiness name to house number
                 {
@@ -78,16 +75,16 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Converters
         private static void CheckAndAdjustAddressLength(TradeAddressDto tradeAddressDto)
         {
             var maxLineLength = 50;
-            tradeAddressDto.LineOne = tradeAddressDto.LineOne == null ? "" : tradeAddressDto.LineOne;
-            tradeAddressDto.LineTwo = tradeAddressDto.LineTwo == null ? "" : tradeAddressDto.LineTwo;
+            tradeAddressDto.LineOne ??= "";
+            tradeAddressDto.LineTwo ??= "";
 
             if (tradeAddressDto.LineOne!.Length > maxLineLength || tradeAddressDto.LineTwo!.Length > maxLineLength)
             {
                 var totalAddressLines = tradeAddressDto.LineOne + " " + tradeAddressDto.LineTwo;
                 var words = totalAddressLines.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                StringBuilder bld1 = new StringBuilder();
-                StringBuilder bld2 = new StringBuilder();
+                StringBuilder bld1 = new();
+                StringBuilder bld2 = new();
 
                 var charCount = 0;
                 foreach (var word in words)

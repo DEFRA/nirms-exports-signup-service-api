@@ -1,9 +1,6 @@
 ﻿using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Constants;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using System.Net;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 
@@ -17,15 +14,18 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 public class TradePartiesController : ControllerBase
 {
     private readonly ITradePartiesService _tradePartiesService;
+    private readonly ILogger<TradePartiesController> _logger;
 
     /// <summary>
     /// provides endpoints for trade parties information
     /// </summary>
     /// <param name="tradePartiesService"></param>
+    /// <param name="logger"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public TradePartiesController(ITradePartiesService tradePartiesService)
+    public TradePartiesController(ITradePartiesService tradePartiesService, ILogger<TradePartiesController> logger)
     {
         _tradePartiesService = tradePartiesService ?? throw new ArgumentNullException(nameof(tradePartiesService));
+        _logger = logger;
     }
 
     /// <summary>
@@ -37,6 +37,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public async Task<IActionResult> GetTradePartiesAsync()
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(GetTradePartiesAsync));
+
         IEnumerable<TradePartyDto> results;
         try
         {
@@ -60,6 +62,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<ActionResult<TradePartyDto>> GetTradePartyAsync(Guid id)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(GetTradePartyAsync));
+
         TradePartyDto? tradeParty;
         try
         {
@@ -87,6 +91,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<ActionResult<TradePartyDto>> GetTradePartyByDefraOrgId(Guid orgid)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(GetTradePartyByDefraOrgId));
+
         TradePartyDto? tradeParty;
         try
         {
@@ -113,6 +119,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public async Task<IActionResult> AddTradeParty(TradePartyDto tradePartyRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(AddTradeParty));
+
         TradePartyDto? tradePartyDto;
         try
         {
@@ -141,6 +149,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateTradeParty(Guid id, TradePartyDto tradePartyRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(UpdateTradeParty));
+
         TradePartyDto? tradePartyDto;
         try
         {
@@ -170,6 +180,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateTradePartyAddress(Guid id, TradePartyDto tradePartyRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(UpdateTradePartyAddress));
+
         TradePartyDto? tradePartyDto;
         try
         {
@@ -198,6 +210,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> AddTradePartyAddress(Guid id, TradeAddressDto tradeAddressRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(AddTradePartyAddress));
+
         TradePartyDto? tradePartyDto;
         try
         {
@@ -227,6 +241,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateTradePartyContact(Guid id, TradePartyDto tradePartyRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(UpdateTradePartyContact));
+
         TradePartyDto? tradePartyDto;
         
         try
@@ -257,6 +273,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateAuthorisedSignatory(Guid id, TradePartyDto tradePartyRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(UpdateAuthorisedSignatory));
+
         TradePartyDto? tradePartyDto;
         try
         {
@@ -286,6 +304,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateAuthorisedSignatorySelfServe(Guid id, TradePartyDto tradePartyRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(UpdateAuthorisedSignatorySelfServe));
+
         TradePartyDto? tradePartyDto;
         try
         {
@@ -315,6 +335,8 @@ public class TradePartiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateTradePartyContactSelfServe(Guid id, TradePartyDto tradePartyRequest)
     {
+        _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesController), nameof(UpdateTradePartyContactSelfServe));
+
         TradePartyDto? tradePartyDto;
 
         try

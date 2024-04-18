@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
+using Defra.Trade.ReMoS.AssuranceService.Shared.DTO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.DTO;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Defra.Trade.ReMoS.AssuranceService.API.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Automapper.Converters;
@@ -31,7 +28,7 @@ public class TradePartiesConverter : ITypeConverter<TradePartyDto, TradeParty>
         tradeParty.AssuranceCommitmentSignedDate = AssignValues(tradeParty.AssuranceCommitmentSignedDate, source.AssuranceCommitmentsSignedDate);
         tradeParty.TermsAndConditionsSignedDate = AssignValues(tradeParty.TermsAndConditionsSignedDate, source.TermsAndConditionsSignedDate);
         tradeParty.SignUpRequestSubmittedBy = tradeParty.SignUpRequestSubmittedBy != Guid.Empty ? tradeParty.SignUpRequestSubmittedBy : source.SignUpRequestSubmittedBy;
-        tradeParty.ApprovalStatus = AssignValues<TradePartyApprovalStatus>(tradeParty.ApprovalStatus, source.ApprovalStatus);
+        tradeParty.ApprovalStatus = AssignValues(tradeParty.ApprovalStatus, source.ApprovalStatus);
 
         if (source.Address != null)
         {
