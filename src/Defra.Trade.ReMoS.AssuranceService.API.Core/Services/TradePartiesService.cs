@@ -46,8 +46,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             _logger.LogInformation("Entered {Class}.{Method}", nameof(TradePartiesService), nameof(AddTradePartyAsync));
 
             var tradeParty = _mapper.Map<TradeParty>(tradePartyRequest);
-            tradeParty.CreatedDate = DateTime.UtcNow;
-            tradeParty.LastUpdateDate = DateTime.UtcNow;
 
             await _tradePartyRepository.AddTradePartyAsync(tradeParty);
             await _tradePartyRepository.SaveChangesAsync();
@@ -94,7 +92,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             if (tradeParty == null)
                 return null;
 
-            tradeParty.LastUpdateDate = DateTime.UtcNow;
             _mapper.Map(tradePartyRequest, tradeParty);
 
             if (tradePartyRequest.FboPhrOption == "none")
@@ -153,7 +150,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             }
 
             _mapper.Map(tradePartyRequest, tradeParty);
-            _tradePartyRepository.UpsertTradePartyContact(tradeParty!);
+            await _tradePartyRepository.UpsertTradePartyContact(tradeParty!);
 
             return _mapper.Map<TradePartyDto>(tradeParty);
         }
@@ -187,10 +184,10 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
             if (tradeParty!.TradeContact?.IsAuthorisedSignatory != null)
             {
-                _tradePartyRepository.UpsertTradePartyContact(tradeParty);
+                await _tradePartyRepository.UpsertTradePartyContact(tradeParty);
             }
 
-            _tradePartyRepository.UpsertAuthorisedSignatory(tradeParty!);
+            await _tradePartyRepository.UpsertAuthorisedSignatory(tradeParty!);
 
             return _mapper.Map<TradePartyDto>(tradeParty);
         }
@@ -208,7 +205,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             }
 
             _mapper.Map(tradePartyRequest, tradeParty);
-            _tradePartyRepository.UpsertTradePartyContact(tradeParty!);
+            await _tradePartyRepository.UpsertTradePartyContact(tradeParty!);
 
             await SendSelfServeApplicationAsync(tradePartyId, true, false);
 
@@ -228,7 +225,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             }
 
             _mapper.Map(tradePartyRequest, tradeParty);
-            _tradePartyRepository.UpsertAuthorisedSignatory(tradeParty!);
+            await _tradePartyRepository.UpsertAuthorisedSignatory(tradeParty!);
 
             await SendSelfServeApplicationAsync(tradePartyId, false, true);
 

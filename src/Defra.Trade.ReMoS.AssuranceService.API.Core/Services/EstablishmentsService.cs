@@ -131,8 +131,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             LogisticsLocation newLocation = _mapper.Map<LogisticsLocation>(dto);
             
             newLocation.Id = Guid.NewGuid();
-            newLocation.CreatedDate = DateTime.UtcNow;
-            newLocation.LastModifiedDate = DateTime.UtcNow;
             newLocation.RemosEstablishmentSchemeNumber = await GenerateEstablishmentRemosSchemeNumber(tradePartyId);
 
             await _establishmentRepository.AddLogisticsLocationAsync(newLocation);

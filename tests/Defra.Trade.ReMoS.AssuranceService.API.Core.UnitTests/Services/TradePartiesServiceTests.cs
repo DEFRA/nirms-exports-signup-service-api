@@ -502,7 +502,7 @@ public class TradePartiesServiceTests
         };
 
         _mockTradePartyRepository.Setup(x => x.FindTradePartyByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(tradeParty)!);
-        _mockTradePartyRepository.Setup(x => x.UpsertAuthorisedSignatory(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>())).Returns(tradeParty!);
+        _mockTradePartyRepository.Setup(x => x.UpsertAuthorisedSignatory(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>())).ReturnsAsync(tradeParty!);
 
         //Act
         var result = await _sut!.UpdateAuthorisedSignatoryAsync(It.IsAny<Guid>(), tradePartyDto);
@@ -528,8 +528,8 @@ public class TradePartiesServiceTests
         };
 
         _mockTradePartyRepository.Setup(x => x.FindTradePartyByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(tradeParty)!);
-        _mockTradePartyRepository.Setup(x => x.UpsertAuthorisedSignatory(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>())).Returns(tradeParty!);
-        _mockTradePartyRepository.Setup(x => x.UpsertTradePartyContact(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>())).Returns(tradeParty!);
+        _mockTradePartyRepository.Setup(x => x.UpsertAuthorisedSignatory(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>())).ReturnsAsync(tradeParty!);
+        _mockTradePartyRepository.Setup(x => x.UpsertTradePartyContact(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>())).ReturnsAsync(tradeParty!);
 
         //Act
         var result = await _sut!.UpdateAuthorisedSignatoryAsync(It.IsAny<Guid>(), tradePartyDto);
@@ -580,7 +580,7 @@ public class TradePartiesServiceTests
         };
 
         _mockTradePartyRepository.Setup(x => x.FindTradePartyByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(tradeParty)!);
-        _mockTradePartyRepository.Setup(x => x.UpsertAuthorisedSignatory(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>())).Returns(tradeParty!);
+        _mockTradePartyRepository.Setup(x => x.UpsertAuthorisedSignatory(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>())).ReturnsAsync(tradeParty!);
 
         //Act
         var result = await _sut!.UpdateAuthorisedSignatoryAsync(It.IsAny<Guid>(), tradePartyRequest);

@@ -78,7 +78,7 @@ public class TradePartyRepository : ITradePartyRepository
         return await _context.SaveChangesAsync(cancellationToken) >= 0;
     }
 
-    public TradeParty UpsertAuthorisedSignatory(TradeParty party, CancellationToken cancellationToken = default)
+    public async Task<TradeParty?> UpsertAuthorisedSignatory(TradeParty party, CancellationToken cancellationToken = default)
     {
         if (party.AuthorisedSignatory != null)
         {
@@ -87,19 +87,19 @@ public class TradePartyRepository : ITradePartyRepository
             {
                 dbSignatory = party.AuthorisedSignatory;
                 _context.AuthorisedSignatory.Update(dbSignatory);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             else
             {
                 _context.AuthorisedSignatory.Add(party.AuthorisedSignatory);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
             
         return party;
     }
 
-    public TradeParty? UpsertTradePartyContact(TradeParty party, CancellationToken cancellationToken = default)
+    public async Task<TradeParty?> UpsertTradePartyContact(TradeParty party, CancellationToken cancellationToken = default)
     {
         if (party.TradeContact != null)
         {
@@ -108,12 +108,12 @@ public class TradePartyRepository : ITradePartyRepository
             {
                 dbTradeContact = party.TradeContact;
                 _context.TradeContacts.Update(dbTradeContact);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             else
             {
                 _context.TradeContacts.Add(party.TradeContact);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
