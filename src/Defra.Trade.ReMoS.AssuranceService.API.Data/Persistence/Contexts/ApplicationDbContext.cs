@@ -29,4 +29,25 @@ public class ApplicationDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    if (entry.Entity.GetType().GetProperty("CreatedDate") != null)
+                        entry.Property("CreatedDate").CurrentValue = DateTime.UtcNow;
+                    break;
+                case EntityState.Modified:
+                    if (entry.Entity.GetType().GetProperty("LastModifiedDate") != null)
+                        entry.Property("LastModifiedDate").CurrentValue = DateTime.UtcNow;
+                    if (entry.Entity.GetType().GetProperty("LastUpdateDate") != null)
+                        entry.Property("LastUpdateDate").CurrentValue = DateTime.UtcNow;
+                    break;
+            }
+        }
+        return await base.SaveChangesAsync(cancellationToken);
+    }
 }

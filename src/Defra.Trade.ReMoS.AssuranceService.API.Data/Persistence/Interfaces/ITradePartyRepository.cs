@@ -6,8 +6,8 @@ public interface ITradePartyRepository
     Task AddTradePartyAsync(TradeParty party, CancellationToken cancellationToken = default);
     TradeParty? UpdateTradeParty(TradeParty party, CancellationToken cancellationToken = default);
     TradeParty? UpdateTradePartyAddress(TradeParty party, CancellationToken cancellationToken = default);
-    TradeParty? UpsertAuthorisedSignatory(TradeParty party, CancellationToken cancellationToken = default);
-    TradeParty? UpsertTradePartyContact(TradeParty party, CancellationToken cancellationToken = default);    
+    Task <TradeParty?> UpsertAuthorisedSignatory(TradeParty party, CancellationToken cancellationToken = default);
+    Task <TradeParty?> UpsertTradePartyContact(TradeParty party, CancellationToken cancellationToken = default);    
     Task<TradeParty?> FindTradePartyByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<IEnumerable<TradeParty>> GetAllTradeParties();
     Task<TradeParty?> GetTradePartyAsync(Guid tradePartyId);
