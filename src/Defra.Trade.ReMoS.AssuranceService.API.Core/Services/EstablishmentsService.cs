@@ -209,6 +209,20 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             return false;
         }
 
+        public async Task<bool> EstablishmentAlreadyExistsForParty(Guid partyId, LogisticsLocationDto dto)
+        {
+            if (await _establishmentRepository.LogisticsLocationAlreadyExistsForParty(
+                partyId,
+                dto.Name ?? string.Empty,
+                dto.Address?.LineOne ?? string.Empty,
+                dto.Address?.PostCode ?? string.Empty,
+                dto.Id))
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         [FeatureGate(FeatureFlags.SelfServeMvpPlus)]
         public async Task<LogisticsLocationDto?> UpdateLogisticsLocationSelfServeAsync(Guid id, LogisticsLocationDto logisticsLocationRequest)
@@ -352,5 +366,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
                 Console.WriteLine(ex.ToString());
             }
         }
+
     }
 }

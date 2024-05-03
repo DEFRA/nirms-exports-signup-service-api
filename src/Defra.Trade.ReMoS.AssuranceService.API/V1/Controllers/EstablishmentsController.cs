@@ -162,12 +162,13 @@ public class EstablishmentsController : ControllerBase
 
         try
         {
-            if (await _establishmentsService.EstablishmentAlreadyExists(dto))
+            if (await _establishmentsService.EstablishmentAlreadyExistsForParty(tradePartyId,dto))
             {
                 return BadRequest("Establishment already exists");
             }
 
             createdLocation = await _establishmentsService.AddLogisticsLocationAsync(tradePartyId, dto);
+
             if (createdLocation != null)
             {
                 return CreatedAtRoute("GetLogisticsLocationByIdAsync", new { id = createdLocation.Id }, createdLocation.Id);
@@ -184,25 +185,25 @@ public class EstablishmentsController : ControllerBase
     /// Updates logistics location
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="logiticsLocationRequest"></param>
+    /// <param name="request"></param>
     /// <returns>No content</returns>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    public async Task<IActionResult> UpdateLogisticsLocationAsync(Guid id, LogisticsLocationDto logiticsLocationRequest)
+    public async Task<IActionResult> UpdateLogisticsLocationAsync(Guid id, LogisticsLocationDto request)
     {
         _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(UpdateLogisticsLocationAsync));
 
         LogisticsLocationDto? establishmentDto;
         try
         {
-            if (!logiticsLocationRequest.IsRemoved && await _establishmentsService.EstablishmentAlreadyExists(logiticsLocationRequest))
+            if (!request.IsRemoved && await _establishmentsService.EstablishmentAlreadyExistsForParty(request.TradePartyId!.Value, request))
             {
                 return BadRequest("Establishment already exists");
             }
 
-            establishmentDto = await _establishmentsService.UpdateLogisticsLocationAsync(id, logiticsLocationRequest);
+            establishmentDto = await _establishmentsService.UpdateLogisticsLocationAsync(id, request);
             if (establishmentDto == null)
             {
                 return NotFound("No establishments found");
@@ -304,25 +305,25 @@ public class EstablishmentsController : ControllerBase
     /// Updates logistics location
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="logiticsLocationRequest"></param>
+    /// <param name="request"></param>
     /// <returns>No content</returns>
     [HttpPut("SelfServe/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    public async Task<IActionResult> UpdateLogisticsLocationSelfServeAsync(Guid id, LogisticsLocationDto logiticsLocationRequest)
+    public async Task<IActionResult> UpdateLogisticsLocationSelfServeAsync(Guid id, LogisticsLocationDto request)
     {
         _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(UpdateLogisticsLocationSelfServeAsync));
 
         LogisticsLocationDto? establishmentDto;
         try
         {
-            if (!logiticsLocationRequest.IsRemoved && await _establishmentsService.EstablishmentAlreadyExists(logiticsLocationRequest))
+            if (!request.IsRemoved && await _establishmentsService.EstablishmentAlreadyExistsForParty(request.TradePartyId!.Value, request))
             {
                 return BadRequest("Establishment already exists");
             }
 
-            establishmentDto = await _establishmentsService.UpdateLogisticsLocationSelfServeAsync(id, logiticsLocationRequest);
+            establishmentDto = await _establishmentsService.UpdateLogisticsLocationSelfServeAsync(id, request);
             if (establishmentDto == null)
             {
                 return NotFound("No establishments found");

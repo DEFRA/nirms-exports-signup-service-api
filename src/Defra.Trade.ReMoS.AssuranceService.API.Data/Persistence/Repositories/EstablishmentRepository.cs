@@ -107,4 +107,23 @@ public class EstablishmentRepository : IEstablishmentRepository
 
         return await query.AnyAsync();
     }
+
+    public async Task<bool> LogisticsLocationAlreadyExistsForParty(Guid partyId, string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null)
+    {
+        var query = _context.LogisticsLocation
+            .Where(loc => loc.TradePartyId == partyId
+            && loc.Name!.ToUpper() == name.ToUpper()
+            && loc.Address!.LineOne!.ToUpper() == addressLineOne.ToUpper()
+            && loc.Address!.PostCode!.Replace(" ", "").ToUpper() == postcode!.Replace(" ", "").ToUpper()
+            && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Rejected
+            && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Removed
+            && !loc.IsRemoved);
+
+        if (exceptThisLocationId != null)
+        {
+            query = query.Where(loc => loc.Id != exceptThisLocationId);
+        }
+
+        return await query.AnyAsync();
+    }
 }
