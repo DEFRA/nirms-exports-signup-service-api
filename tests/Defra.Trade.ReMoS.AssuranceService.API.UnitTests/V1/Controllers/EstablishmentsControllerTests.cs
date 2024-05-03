@@ -30,7 +30,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             var expected = _systemUnderTest.CreatedAtRoute("GetLogisticsLocationByIdAsync", new { id = logisticsLocation.Id }, logisticsLocation.Id);
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.AddLogisticsLocationAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -50,7 +50,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             LogisticsLocationDto? nullLocation = null;
 
-            _mockEstablishmentsService.Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+            _mockEstablishmentsService.Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService.Setup(x => x.AddLogisticsLocationAsync(It.IsAny<Guid>() ,It.IsAny<LogisticsLocationDto>()))
                 .ReturnsAsync(nullLocation);
@@ -68,8 +68,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //arrange
             var dto = GenerateLLDTO();
             _mockEstablishmentsService
-            .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
-            .ThrowsAsync(new Exception("Internal error"));
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
+                .ThrowsAsync(new Exception("Internal error"));
 
             //act
             var results = await _systemUnderTest.AddLogisticsLocationToTradePartyAsync(dto.TradePartyId.Value, dto);
@@ -87,7 +87,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             var expected = _systemUnderTest.BadRequest("Establishment already exists");
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(true);
 
             //act
@@ -298,7 +298,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var location = GetLogisticsLocation();
             var expected = _systemUnderTest.NoContent();
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -319,7 +319,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var location = GetLogisticsLocation();
             var expected = _systemUnderTest.NoContent();
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationSelfServeAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -340,7 +340,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             location.ApprovalStatus = LogisticsLocationApprovalStatus.Removed;
             var expected = _systemUnderTest.NoContent();
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationSelfServeAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -362,7 +362,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             var expected = _systemUnderTest.BadRequest("Establishment already exists");
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(true);
 
             //act
@@ -381,7 +381,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             var expected = _systemUnderTest.BadRequest("Establishment already exists");
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(true);
 
             //act
@@ -397,7 +397,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //arrange
             LogisticsLocationDto? location = null;
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -416,7 +416,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //arrange
             LogisticsLocationDto? location = null;
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationSelfServeAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -434,7 +434,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         {
             //arrange                        
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception());
 
             //act
@@ -449,7 +449,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         {
             //arrange                        
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception());
 
             //act

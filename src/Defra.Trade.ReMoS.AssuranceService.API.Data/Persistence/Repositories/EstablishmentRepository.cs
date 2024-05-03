@@ -90,7 +90,7 @@ public class EstablishmentRepository : IEstablishmentRepository
         _context.LogisticsLocation.Remove(logisticsLocation);
     }
 
-    public async Task<bool> LogisticsLocationAlreadyExists(string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null)
+    public async Task<bool> LogisticsLocationAlreadyExists(string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null, Guid? partyId = null)
     {
         var query = _context.LogisticsLocation
             .Where(loc => loc.Name!.ToUpper() == name.ToUpper()
@@ -103,6 +103,11 @@ public class EstablishmentRepository : IEstablishmentRepository
         if (exceptThisLocationId != null) 
         {
             query = query.Where(loc => loc.Id != exceptThisLocationId);
+        }
+
+        if (partyId != null && partyId != Guid.Empty)
+        {
+            query = query.Where(loc => loc.TradePartyId == partyId);
         }
 
         return await query.AnyAsync();

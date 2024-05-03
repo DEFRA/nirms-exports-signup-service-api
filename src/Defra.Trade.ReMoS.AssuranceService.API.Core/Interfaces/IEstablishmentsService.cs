@@ -15,7 +15,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces
         Task<bool> RemoveLogisticsLocationAsync(Guid id);
         LogisticsLocationDto? GetLogisticsLocationByUprnAsync(string uprn);
         List<AddressDto> GetTradeAddressApiByPostcode(string postcode);
-        Task<bool> EstablishmentAlreadyExists(LogisticsLocationDto dto);
+        Task<bool> EstablishmentAlreadyExists(LogisticsLocationDto dto, Guid? partyId = null);
         Task<LogisticsLocationDto?> UpdateLogisticsLocationSelfServeAsync(Guid id, LogisticsLocationDto logisticsLocationRequest);
     }
 }

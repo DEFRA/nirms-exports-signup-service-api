@@ -195,20 +195,20 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             return remosNumber;            
         }
 
-        public async Task<bool> EstablishmentAlreadyExists(LogisticsLocationDto dto)
+        public async Task<bool> EstablishmentAlreadyExists(LogisticsLocationDto dto, Guid? partyId = null)
         {
             if (await _establishmentRepository.LogisticsLocationAlreadyExists(
                dto.Name ?? string.Empty,
                dto.Address?.LineOne ?? string.Empty,
                dto.Address?.PostCode ?? string.Empty,
-               dto.Id))
+               dto.Id,
+               partyId))
             {
                 return true;
             }
 
             return false;
         }
-
 
         [FeatureGate(FeatureFlags.SelfServeMvpPlus)]
         public async Task<LogisticsLocationDto?> UpdateLogisticsLocationSelfServeAsync(Guid id, LogisticsLocationDto logisticsLocationRequest)
@@ -352,5 +352,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
                 Console.WriteLine(ex.ToString());
             }
         }
+
     }
 }

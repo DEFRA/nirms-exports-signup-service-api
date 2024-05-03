@@ -634,6 +634,7 @@ public class EstablishmentsServiceTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<Guid>(),
                 It.IsAny<Guid>()))
             .Returns(Task.FromResult(false));
 
@@ -652,6 +653,7 @@ public class EstablishmentsServiceTests
         {
             Name = "Test Name",
             Id = Guid.NewGuid(),
+            TradePartyId = Guid.NewGuid(),
             Address = new TradeAddressDto { Id = new Guid() }
         };
         _mockEstablishmentRepository.Setup(
@@ -659,11 +661,12 @@ public class EstablishmentsServiceTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<Guid>(),
                 It.IsAny<Guid>()))
             .Returns(Task.FromResult(true));
 
         //Act
-        var result = await _sut!.EstablishmentAlreadyExists(logisticsLocationAddDto);
+        var result = await _sut!.EstablishmentAlreadyExists(logisticsLocationAddDto, logisticsLocationAddDto.TradePartyId);
 
         //Assert
         result.Should().Be(true);
@@ -685,6 +688,7 @@ public class EstablishmentsServiceTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<Guid>(),
                 It.IsAny<Guid>()))
             .Returns(Task.FromResult(false));
 
@@ -713,6 +717,7 @@ public class EstablishmentsServiceTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<Guid>(),
                 It.IsAny<Guid>()))
             .Returns(Task.FromResult(false));
 
