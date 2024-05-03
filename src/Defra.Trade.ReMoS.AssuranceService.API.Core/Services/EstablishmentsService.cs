@@ -195,28 +195,14 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             return remosNumber;            
         }
 
-        public async Task<bool> EstablishmentAlreadyExists(LogisticsLocationDto dto)
+        public async Task<bool> EstablishmentAlreadyExists(LogisticsLocationDto dto, Guid? partyId = null)
         {
             if (await _establishmentRepository.LogisticsLocationAlreadyExists(
                dto.Name ?? string.Empty,
                dto.Address?.LineOne ?? string.Empty,
                dto.Address?.PostCode ?? string.Empty,
-               dto.Id))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public async Task<bool> EstablishmentAlreadyExistsForParty(Guid partyId, LogisticsLocationDto dto)
-        {
-            if (await _establishmentRepository.LogisticsLocationAlreadyExistsForParty(
-                partyId,
-                dto.Name ?? string.Empty,
-                dto.Address?.LineOne ?? string.Empty,
-                dto.Address?.PostCode ?? string.Empty,
-                dto.Id))
+               dto.Id,
+               partyId))
             {
                 return true;
             }

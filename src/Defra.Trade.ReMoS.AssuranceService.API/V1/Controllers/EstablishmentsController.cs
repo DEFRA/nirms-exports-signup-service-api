@@ -162,7 +162,7 @@ public class EstablishmentsController : ControllerBase
 
         try
         {
-            if (await _establishmentsService.EstablishmentAlreadyExistsForParty(tradePartyId,dto))
+            if (await _establishmentsService.EstablishmentAlreadyExists(dto, tradePartyId))
             {
                 return BadRequest("Establishment already exists");
             }
@@ -198,7 +198,7 @@ public class EstablishmentsController : ControllerBase
         LogisticsLocationDto? establishmentDto;
         try
         {
-            if (!request.IsRemoved && await _establishmentsService.EstablishmentAlreadyExistsForParty(request.TradePartyId!.Value, request))
+            if (!request.IsRemoved && await _establishmentsService.EstablishmentAlreadyExists(request, request.TradePartyId!.Value))
             {
                 return BadRequest("Establishment already exists");
             }
@@ -318,7 +318,7 @@ public class EstablishmentsController : ControllerBase
         LogisticsLocationDto? establishmentDto;
         try
         {
-            if (!request.IsRemoved && await _establishmentsService.EstablishmentAlreadyExistsForParty(request.TradePartyId!.Value, request))
+            if (!request.IsRemoved && await _establishmentsService.EstablishmentAlreadyExists(request, request.TradePartyId!.Value))
             {
                 return BadRequest("Establishment already exists");
             }

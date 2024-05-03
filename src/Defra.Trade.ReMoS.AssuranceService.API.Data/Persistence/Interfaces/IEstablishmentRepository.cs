@@ -13,7 +13,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces
         Task<IEnumerable<LogisticsLocation>> GetActiveLogisticsLocationsForTradePartyAsync(Guid tradePartyId);
         Task<IEnumerable<LogisticsLocation>> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId);
         public void RemoveLogisticsLocation(LogisticsLocation logisticsLocation);
-        public Task<bool> LogisticsLocationAlreadyExists(string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null);
-        public Task<bool> LogisticsLocationAlreadyExistsForParty(Guid partyId, string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null);
+        public Task<bool> LogisticsLocationAlreadyExists(string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null, Guid? partyId = null);
     }
 }

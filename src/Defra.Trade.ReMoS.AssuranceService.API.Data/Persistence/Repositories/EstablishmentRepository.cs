@@ -90,7 +90,7 @@ public class EstablishmentRepository : IEstablishmentRepository
         _context.LogisticsLocation.Remove(logisticsLocation);
     }
 
-    public async Task<bool> LogisticsLocationAlreadyExists(string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null)
+    public async Task<bool> LogisticsLocationAlreadyExists(string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null, Guid? partyId = null)
     {
         var query = _context.LogisticsLocation
             .Where(loc => loc.Name!.ToUpper() == name.ToUpper()
@@ -105,23 +105,9 @@ public class EstablishmentRepository : IEstablishmentRepository
             query = query.Where(loc => loc.Id != exceptThisLocationId);
         }
 
-        return await query.AnyAsync();
-    }
-
-    public async Task<bool> LogisticsLocationAlreadyExistsForParty(Guid partyId, string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null)
-    {
-        var query = _context.LogisticsLocation
-            .Where(loc => loc.TradePartyId == partyId
-            && loc.Name!.ToUpper() == name.ToUpper()
-            && loc.Address!.LineOne!.ToUpper() == addressLineOne.ToUpper()
-            && loc.Address!.PostCode!.Replace(" ", "").ToUpper() == postcode!.Replace(" ", "").ToUpper()
-            && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Rejected
-            && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Removed
-            && !loc.IsRemoved);
-
-        if (exceptThisLocationId != null)
+        if (partyId != null && partyId != Guid.Empty)
         {
-            query = query.Where(loc => loc.Id != exceptThisLocationId);
+            query = query.Where(loc => loc.TradePartyId == partyId);
         }
 
         return await query.AnyAsync();
