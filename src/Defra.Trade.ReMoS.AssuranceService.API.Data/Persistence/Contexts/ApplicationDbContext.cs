@@ -41,8 +41,6 @@ public class ApplicationDbContext : DbContext
                         entry.Property("CreatedDate").CurrentValue = DateTime.UtcNow;
                     break;
                 case EntityState.Modified:
-                    if (entry.Entity.GetType().GetProperty("LastModifiedDate") != null)
-                        entry.Property("LastModifiedDate").CurrentValue = DateTime.UtcNow;
                     if (entry.Entity.GetType().GetProperty("LastUpdateDate") != null)
                         entry.Property("LastUpdateDate").CurrentValue = DateTime.UtcNow;
                     break;
