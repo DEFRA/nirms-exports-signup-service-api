@@ -1,4 +1,5 @@
 ﻿using Defra.Trade.Address.V1.ApiClient.Model;
+using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -91,23 +92,32 @@ public class EstablishmentsController : ControllerBase
     /// </summary>
     /// <param name="tradePartyId"></param>
     /// <param name="isRejected"></param>
+    /// <param name="pageNumber"></param>
+    /// <param name="pageSize"></param>
     /// <returns>IEnumerable of LogisticLocationDTO</returns>
     [HttpGet("Party/{tradePartyId}", Name = "GetLogisticsLocationsForTradePartyAsync")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<LogisticsLocationDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(Guid tradePartyId, [FromQuery(Name = "isRejected")] bool isRejected)
+    public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(
+        Guid tradePartyId, 
+        [FromQuery(Name = "isRejected")] bool isRejected, 
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
     {
+        const int maxPageSize = 50;
+        pageSize = (pageSize > maxPageSize) ? maxPageSize : pageSize;
+
         _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationsForTradePartyAsync));
 
-        IEnumerable<LogisticsLocationDto>? result;
+        PagedList<LogisticsLocationDto>? result;
         try
         {
-            if (isRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId);
-            else result = await _establishmentsService.GetLogisticsLocationsForTradePartyAsync(tradePartyId);
+            if (isRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, pageNumber, pageSize);
+            else result = await _establishmentsService.GetLogisticsLocationsForTradePartyAsync(tradePartyId, pageNumber, pageSize);
             if (result == null)
             {
-                return NotFound("No trade party found found");
+                return NotFound("No trade party found");
             }
         }
         catch (Exception ex)

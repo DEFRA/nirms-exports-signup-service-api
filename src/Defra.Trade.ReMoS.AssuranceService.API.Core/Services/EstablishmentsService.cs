@@ -2,6 +2,7 @@
 using Azure.Messaging.ServiceBus;
 using Defra.Trade.Address.V1.ApiClient.Api;
 using Defra.Trade.Address.V1.ApiClient.Model;
+using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
@@ -88,26 +89,27 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
         }
 
-        public async Task<IEnumerable<LogisticsLocationDto>?> GetLogisticsLocationsForTradePartyAsync(Guid tradePartyId)
+        public async Task<PagedList<LogisticsLocationDto>?> GetLogisticsLocationsForTradePartyAsync(Guid tradePartyId, int pageNumber = 1, int pageSize = 10)
         {
             if (!await _tradePartyRepository.TradePartyExistsAsync(tradePartyId))
                 return null;
 
             var locations = await _establishmentRepository.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId);
             var locationDtos = _mapper.Map<IEnumerable<LogisticsLocationDto>>(locations);
-            return locationDtos;
+            var pageList = locationDtos.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            return new PagedList<LogisticsLocationDto>(pageList, locationDtos.Count(), pageNumber, pageSize);
 
         }
 
-        public async Task<IEnumerable<LogisticsLocationDto>?> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId)
+        public async Task<PagedList<LogisticsLocationDto>?> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId, int pageNumber = 1, int pageSize = 10)
         {
             if (!await _tradePartyRepository.TradePartyExistsAsync(tradePartyId))
                 return null;
 
             var locations = await _establishmentRepository.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId);
             var locationDtos = _mapper.Map<IEnumerable<LogisticsLocationDto>>(locations.Where(loc => !loc.IsRemoved));
-            return locationDtos;
-
+            var pageList = locationDtos.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            return new PagedList<LogisticsLocationDto>(pageList, locationDtos.Count(), pageNumber, pageSize);
         }
 
         public async Task<LogisticsLocationDto?> AddLogisticsLocationAsync(Guid tradePartyId, LogisticsLocationDto dto)

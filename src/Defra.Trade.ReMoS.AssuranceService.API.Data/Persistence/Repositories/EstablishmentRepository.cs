@@ -99,8 +99,8 @@ public class EstablishmentRepository : IEstablishmentRepository
             && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Rejected
             && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Removed
             && !loc.IsRemoved);
-        
-        if (exceptThisLocationId != null) 
+
+        if (exceptThisLocationId != null)
         {
             query = query.Where(loc => loc.Id != exceptThisLocationId);
         }
