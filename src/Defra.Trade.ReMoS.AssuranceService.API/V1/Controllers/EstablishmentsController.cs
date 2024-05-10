@@ -101,7 +101,7 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(
-        Guid tradePartyId, 
+        Guid tradePartyId,
         [FromQuery(Name = "isRejected")] bool isRejected,
         [FromQuery(Name = "searchTerm")] string? searchTerm,
         [FromQuery] int pageNumber = 1,
@@ -123,9 +123,9 @@ public class EstablishmentsController : ControllerBase
             }
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                result = result.Where(logisticslocation => logisticslocation.Name!.Contains(searchTerm) || 
-                                      logisticslocation.RemosEstablishmentSchemeNumber!.Contains(searchTerm) || 
-                                      logisticslocation.Address!.PostCode!.Contains(searchTerm));
+                result.Items = result.Items.Where(logisticslocation => logisticslocation.Name!.Contains(searchTerm) ||
+                                      logisticslocation.RemosEstablishmentSchemeNumber!.Contains(searchTerm) ||
+                                      logisticslocation.Address!.PostCode!.Contains(searchTerm)).ToList();
             }
         }
         catch (Exception ex)
@@ -192,7 +192,7 @@ public class EstablishmentsController : ControllerBase
                 return CreatedAtRoute("GetLogisticsLocationByIdAsync", new { id = createdLocation.Id }, createdLocation.Id);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -227,7 +227,7 @@ public class EstablishmentsController : ControllerBase
                 return NotFound("No establishments found");
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -310,9 +310,9 @@ public class EstablishmentsController : ControllerBase
             if (result == null)
             {
                 return NotFound("No establishments found");
-            }  
+            }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
