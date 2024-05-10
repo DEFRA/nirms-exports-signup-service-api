@@ -393,7 +393,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             result.Should().BeEquivalentTo(expected);
         }
 
-
         [Test]
         public async Task UpdateLogisticsLocationSelfServeAsync_Returns_Success()
         {
