@@ -92,6 +92,7 @@ public class EstablishmentsController : ControllerBase
     /// </summary>
     /// <param name="tradePartyId"></param>
     /// <param name="isRejected"></param>
+    /// <param name="searchTerm"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
     /// <returns>IEnumerable of LogisticLocationDTO</returns>
@@ -101,7 +102,8 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(
         Guid tradePartyId, 
-        [FromQuery(Name = "isRejected")] bool isRejected, 
+        [FromQuery(Name = "isRejected")] bool isRejected,
+        [FromQuery(Name = "searchTerm")] string? searchTerm,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10)
     {
@@ -118,6 +120,12 @@ public class EstablishmentsController : ControllerBase
             if (result == null)
             {
                 return NotFound("No trade party found");
+            }
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                result = result.Where(logisticslocation => logisticslocation.Name!.Contains(searchTerm) || 
+                                      logisticslocation.RemosEstablishmentSchemeNumber!.Contains(searchTerm) || 
+                                      logisticslocation.Address!.PostCode!.Contains(searchTerm));
             }
         }
         catch (Exception ex)
