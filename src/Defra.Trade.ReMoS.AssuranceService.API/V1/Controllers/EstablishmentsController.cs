@@ -91,12 +91,13 @@ public class EstablishmentsController : ControllerBase
     /// </summary>
     /// <param name="tradePartyId"></param>
     /// <param name="isRejected"></param>
+    /// <param name="searchTerm"></param>
     /// <returns>IEnumerable of LogisticLocationDTO</returns>
     [HttpGet("Party/{tradePartyId}", Name = "GetLogisticsLocationsForTradePartyAsync")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<LogisticsLocationDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(Guid tradePartyId, [FromQuery(Name = "isRejected")] bool isRejected)
+    public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(Guid tradePartyId, [FromQuery(Name = "isRejected")] bool isRejected, [FromQuery(Name = "searchTerm")] string? searchTerm) 
     {
         _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationsForTradePartyAsync));
 
@@ -108,6 +109,12 @@ public class EstablishmentsController : ControllerBase
             if (result == null)
             {
                 return NotFound("No trade party found found");
+            }
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                result = result.Where(logisticslocation => logisticslocation.Name!.Contains(searchTerm) || 
+                                      logisticslocation.RemosEstablishmentSchemeNumber!.Contains(searchTerm) || 
+                                      logisticslocation.Address!.PostCode!.Contains(searchTerm));
             }
         }
         catch (Exception ex)
