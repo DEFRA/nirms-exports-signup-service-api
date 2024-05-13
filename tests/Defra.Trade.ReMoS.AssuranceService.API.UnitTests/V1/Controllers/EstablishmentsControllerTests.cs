@@ -3,6 +3,8 @@ using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
+using Microsoft.Azure.Management.AppService.Fluent.Models;
+using Microsoft.Azure.Management.Sql.Fluent.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
 #pragma warning disable CS8602
@@ -235,7 +237,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
         }
 
-        [Test]
+		[Test]
         public async Task GetLogisticsLocationsForTradePartyAsyncReturnsSuccess()
         {
             //arrange
@@ -249,10 +251,91 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
                 .Returns(Task.FromResult(list)!);
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, "", "");
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, null);
+
+			//assert
+			result.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public async Task GetLogisticsLocationsForTradePartyAsyncReturnsSuccessWithSearchTermName()
+        {
+            //arrange
+            var logisticsLocation = GenerateLLDTO();
+            logisticsLocation.Address = GetAddress();
+            logisticsLocation.RemosEstablishmentSchemeNumber = "123ABC";
+            var searchTerm = "Location 1";
+            var logisticsLocation2 = GenerateLLDTO();
+			logisticsLocation2.Address = GetAddress();
+			logisticsLocation2.RemosEstablishmentSchemeNumber = "123ABC";
+			logisticsLocation2.Name = searchTerm;
+            var list = new List<LogisticsLocationDto> { logisticsLocation, logisticsLocation2 };
+            var expected = _systemUnderTest.Ok(new List<LogisticsLocationDto>
+            {
+                logisticsLocation2
+            }); 
+
+            _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>())).Returns(Task.FromResult(list.AsEnumerable())!);
+
+            //act
+            var resultWithSearchTerm = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, searchTerm);
 
             //assert
-            result.Should().BeEquivalentTo(expected);
+            resultWithSearchTerm.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public async Task GetLogisticsLocationsForTradePartyAsyncReturnsSuccessWithSearchTermPostcode()
+        {
+            //arrange
+            var logisticsLocation = GenerateLLDTO();
+            logisticsLocation.Address = GetAddress();
+            logisticsLocation.RemosEstablishmentSchemeNumber = "123ABC";
+            var searchTerm = "Location 1";
+            var logisticsLocation2 = GenerateLLDTO();
+            logisticsLocation2.Address = GetAddress();
+            logisticsLocation2.RemosEstablishmentSchemeNumber = "123ABC";
+            logisticsLocation2.Address.PostCode = searchTerm;
+            var list = new List<LogisticsLocationDto> { logisticsLocation, logisticsLocation2 };
+            var expected = _systemUnderTest.Ok(new List<LogisticsLocationDto>
+            {
+                logisticsLocation2
+            });
+
+            _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>())).Returns(Task.FromResult(list.AsEnumerable())!);
+
+            //act
+            var resultWithSearchTerm = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, searchTerm);
+
+            //assert
+            resultWithSearchTerm.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public async Task GetLogisticsLocationsForTradePartyAsyncReturnsSuccessWithSearchTermRemosNumber()
+        {
+            //arrange
+            var logisticsLocation = GenerateLLDTO();
+            logisticsLocation.Address = GetAddress();
+            logisticsLocation.RemosEstablishmentSchemeNumber = "123ABC";
+            var searchTerm = "Location 1";
+            var logisticsLocation2 = GenerateLLDTO();
+            logisticsLocation2.Address = GetAddress();
+            logisticsLocation2.RemosEstablishmentSchemeNumber = "123ABC";
+            logisticsLocation2.RemosEstablishmentSchemeNumber = searchTerm;
+            var list = new List<LogisticsLocationDto> { logisticsLocation, logisticsLocation2 };
+            var expected = _systemUnderTest.Ok(new List<LogisticsLocationDto>
+            {
+                logisticsLocation2
+            });
+
+            _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>())).Returns(Task.FromResult(list.AsEnumerable())!);
+
+            //act
+            var resultWithSearchTerm = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, searchTerm);
+
+            //assert
+            resultWithSearchTerm.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -266,11 +349,11 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //act
             var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), false, "", "");
 
-            //assert
-            result.Should().BeEquivalentTo(_systemUnderTest.Ok());
+			//assert
+			result.Should().BeEquivalentTo(_systemUnderTest.Ok());
         }
 
-        [Test]
+		[Test]
         public async Task GetAllLogisticsLocationsForTradePartyAsync_ReturnsOk_ForEmptyListOfEstablishments()
         {
             //arrange
@@ -281,12 +364,11 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //act
             var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), false, "", "");
 
-            //assert
-            result.Should().BeEquivalentTo(_systemUnderTest.Ok());
+			//assert
+			result.Should().BeEquivalentTo(_systemUnderTest.Ok());
         }
 
-
-        [Test]
+		[Test]
         public async Task GetLogisticsLocationsForTradePartyAsyncReturnsBadRequest()
         {
             //arrange
@@ -297,11 +379,11 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //act
             var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, "", "");
 
-            //assert
-            result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
+			//assert
+			result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
         }
 
-        [Test]
+		[Test]
         public async Task UpdateLogisticsLocationAsync_Returns_Success()
         {
             //arrange
@@ -320,7 +402,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //assert
             result.Should().BeEquivalentTo(expected);
         }
-
 
         [Test]
         public async Task UpdateLogisticsLocationSelfServeAsync_Returns_Success()
