@@ -251,7 +251,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
                 .Returns(Task.FromResult(list)!);
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, null);
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, null, null);
 
 			//assert
 			result.Should().BeEquivalentTo(expected);
@@ -270,15 +270,21 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
 			logisticsLocation2.RemosEstablishmentSchemeNumber = "123ABC";
 			logisticsLocation2.Name = searchTerm;
             var list = new List<LogisticsLocationDto> { logisticsLocation, logisticsLocation2 };
-            var expected = _systemUnderTest.Ok(new List<LogisticsLocationDto>
+            var pagedList = new PagedList<LogisticsLocationDto>()
             {
-                logisticsLocation2
+                Items = list
+            };
+            var expected = _systemUnderTest.Ok(new PagedList<LogisticsLocationDto>
+            {
+                Items = new List<LogisticsLocationDto>() { logisticsLocation2 }
             }); 
 
-            _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>())).Returns(Task.FromResult(list.AsEnumerable())!);
+            _mockEstablishmentsService
+                .Setup(x => x.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>() ))
+                .Returns(Task.FromResult(pagedList)!);
 
             //act
-            var resultWithSearchTerm = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, searchTerm);
+            var resultWithSearchTerm = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, searchTerm, "");
 
             //assert
             resultWithSearchTerm.Should().BeEquivalentTo(expected);
@@ -297,15 +303,21 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             logisticsLocation2.RemosEstablishmentSchemeNumber = "123ABC";
             logisticsLocation2.Address.PostCode = searchTerm;
             var list = new List<LogisticsLocationDto> { logisticsLocation, logisticsLocation2 };
-            var expected = _systemUnderTest.Ok(new List<LogisticsLocationDto>
+            var pagedList = new PagedList<LogisticsLocationDto>()
             {
-                logisticsLocation2
+                Items = list
+            };
+            var expected = _systemUnderTest.Ok(new PagedList<LogisticsLocationDto>
+            {
+                Items = new List<LogisticsLocationDto>() { logisticsLocation2 }
             });
 
-            _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>())).Returns(Task.FromResult(list.AsEnumerable())!);
+            _mockEstablishmentsService
+                .Setup(x => x.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Returns(Task.FromResult(pagedList)!);
 
             //act
-            var resultWithSearchTerm = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, searchTerm);
+            var resultWithSearchTerm = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, searchTerm, "");
 
             //assert
             resultWithSearchTerm.Should().BeEquivalentTo(expected);
@@ -324,15 +336,21 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             logisticsLocation2.RemosEstablishmentSchemeNumber = "123ABC";
             logisticsLocation2.RemosEstablishmentSchemeNumber = searchTerm;
             var list = new List<LogisticsLocationDto> { logisticsLocation, logisticsLocation2 };
-            var expected = _systemUnderTest.Ok(new List<LogisticsLocationDto>
+            var pagedList = new PagedList<LogisticsLocationDto>()
             {
-                logisticsLocation2
+                Items = list
+            };
+            var expected = _systemUnderTest.Ok(new PagedList<LogisticsLocationDto>
+            {
+                Items = new List<LogisticsLocationDto>() { logisticsLocation2 }
             });
 
-            _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>())).Returns(Task.FromResult(list.AsEnumerable())!);
+            _mockEstablishmentsService
+                .Setup(x => x.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Returns(Task.FromResult(pagedList)!);
 
             //act
-            var resultWithSearchTerm = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, searchTerm);
+            var resultWithSearchTerm = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, searchTerm, "");
 
             //assert
             resultWithSearchTerm.Should().BeEquivalentTo(expected);
