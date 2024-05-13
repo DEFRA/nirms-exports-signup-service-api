@@ -91,7 +91,7 @@ public class EstablishmentsController : ControllerBase
     /// Get all locations belonging to the trade party
     /// </summary>
     /// <param name="tradePartyId"></param>
-    /// <param name="isRejected"></param>
+    /// <param name="includeRejected"></param>
     /// <param name="searchTerm"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
@@ -102,10 +102,11 @@ public class EstablishmentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(
         Guid tradePartyId,
-        [FromQuery(Name = "isRejected")] bool isRejected,
+        [FromQuery(Name = "includeRejected")] bool includeRejected,
         [FromQuery(Name = "searchTerm")] string? searchTerm,
+        [FromQuery(Name = "ni_gbFlag")] string? NI_GBFlag,
         [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 10)
+        [FromQuery] int pageSize = 50)
     {
         const int maxPageSize = 50;
         pageSize = (pageSize > maxPageSize) ? maxPageSize : pageSize;
@@ -113,19 +114,23 @@ public class EstablishmentsController : ControllerBase
         _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationsForTradePartyAsync));
 
         PagedList<LogisticsLocationDto>? result;
+
         try
         {
-            if (isRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, pageNumber, pageSize);
-            else result = await _establishmentsService.GetLogisticsLocationsForTradePartyAsync(tradePartyId, pageNumber, pageSize);
+            if (includeRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, pageNumber, pageSize);
+            else result = await _establishmentsService.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, pageNumber, pageSize);
+            
             if (result == null)
             {
                 return NotFound("No trade party found");
             }
+
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                result.Items = result.Items.Where(logisticslocation => logisticslocation.Name!.Contains(searchTerm) ||
-                                      logisticslocation.RemosEstablishmentSchemeNumber!.Contains(searchTerm) ||
-                                      logisticslocation.Address!.PostCode!.Contains(searchTerm)).ToList();
+                result.Items = result.Items.Where(
+                    logisticslocation => logisticslocation.Name!.Contains(searchTerm) ||
+                    logisticslocation.RemosEstablishmentSchemeNumber!.Contains(searchTerm) ||
+                    logisticslocation.Address!.PostCode!.Contains(searchTerm)).ToList();
             }
         }
         catch (Exception ex)
