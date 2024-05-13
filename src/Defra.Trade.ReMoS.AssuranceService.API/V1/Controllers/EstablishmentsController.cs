@@ -93,6 +93,7 @@ public class EstablishmentsController : ControllerBase
     /// <param name="tradePartyId"></param>
     /// <param name="includeRejected"></param>
     /// <param name="searchTerm"></param>
+    /// <param name="NI_GBFlag"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
     /// <returns>IEnumerable of LogisticLocationDTO</returns>

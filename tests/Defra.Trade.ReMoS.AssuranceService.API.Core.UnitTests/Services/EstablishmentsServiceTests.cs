@@ -358,7 +358,7 @@ public class EstablishmentsServiceTests
 
         //Assert
         result.Should().NotBeNull();
-        result!.Items.Count().Should().Be(1);
+        result!.Items.Count.Should().Be(1);
     }
 
     [Test]
@@ -417,7 +417,7 @@ public class EstablishmentsServiceTests
 
         //Assert
         result.Should().NotBeNull();
-        result!.Items.Count().Should().Be(2);
+        result!.Items.Count.Should().Be(2);
     }
 
     [Test]
