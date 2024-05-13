@@ -1,4 +1,5 @@
 ﻿using Defra.Trade.Address.V1.ApiClient.Model;
+using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -90,31 +91,47 @@ public class EstablishmentsController : ControllerBase
     /// Get all locations belonging to the trade party
     /// </summary>
     /// <param name="tradePartyId"></param>
-    /// <param name="isRejected"></param>
+    /// <param name="includeRejected"></param>
     /// <param name="searchTerm"></param>
+    /// <param name="NI_GBFlag"></param>
+    /// <param name="pageNumber"></param>
+    /// <param name="pageSize"></param>
     /// <returns>IEnumerable of LogisticLocationDTO</returns>
     [HttpGet("Party/{tradePartyId}", Name = "GetLogisticsLocationsForTradePartyAsync")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<LogisticsLocationDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(Guid tradePartyId, [FromQuery(Name = "isRejected")] bool isRejected, [FromQuery(Name = "searchTerm")] string? searchTerm) 
+    public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(
+        Guid tradePartyId,
+        [FromQuery(Name = "includeRejected")] bool includeRejected,
+        [FromQuery(Name = "searchTerm")] string? searchTerm,
+        [FromQuery(Name = "ni_gbFlag")] string? NI_GBFlag,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 50)
     {
+        const int maxPageSize = 50;
+        pageSize = (pageSize > maxPageSize) ? maxPageSize : pageSize;
+
         _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationsForTradePartyAsync));
 
-        IEnumerable<LogisticsLocationDto>? result;
+        PagedList<LogisticsLocationDto>? result;
+
         try
         {
-            if (isRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId);
-            else result = await _establishmentsService.GetLogisticsLocationsForTradePartyAsync(tradePartyId);
+            if (includeRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, pageNumber, pageSize);
+            else result = await _establishmentsService.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, pageNumber, pageSize);
+            
             if (result == null)
             {
-                return NotFound("No trade party found found");
+                return NotFound("No trade party found");
             }
+
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                result = result.Where(logisticslocation => logisticslocation.Name!.Contains(searchTerm) || 
-                                      logisticslocation.RemosEstablishmentSchemeNumber!.Contains(searchTerm) || 
-                                      logisticslocation.Address!.PostCode!.Contains(searchTerm));
+                result.Items = result.Items.Where(
+                    logisticslocation => logisticslocation.Name!.Contains(searchTerm) ||
+                    logisticslocation.RemosEstablishmentSchemeNumber!.Contains(searchTerm) ||
+                    logisticslocation.Address!.PostCode!.Contains(searchTerm)).ToList();
             }
         }
         catch (Exception ex)
@@ -181,7 +198,7 @@ public class EstablishmentsController : ControllerBase
                 return CreatedAtRoute("GetLogisticsLocationByIdAsync", new { id = createdLocation.Id }, createdLocation.Id);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -216,7 +233,7 @@ public class EstablishmentsController : ControllerBase
                 return NotFound("No establishments found");
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -299,9 +316,9 @@ public class EstablishmentsController : ControllerBase
             if (result == null)
             {
                 return NotFound("No establishments found");
-            }  
+            }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }

@@ -254,7 +254,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         private async Task SendSignUpApplication(Guid tradepartyId)
         {
             var tradeParty = await FindTradeParty(tradepartyId);
-            var logisticsLocations = await _establishmentRepository.GetActiveLogisticsLocationsForTradePartyAsync(tradepartyId);
+            var logisticsLocations = await _establishmentRepository.GetActiveLogisticsLocationsForTradePartyAsync(tradepartyId, string.Empty);
             try
             {
                 var signUpPayload = JsonSerializer.Serialize(new SignUpApplicationMessage

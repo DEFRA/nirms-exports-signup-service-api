@@ -65,24 +65,36 @@ public class EstablishmentRepository : IEstablishmentRepository
         _context.LogisticsLocation.Update(logisticsLocation);
     }
 
-    public async Task<IEnumerable<LogisticsLocation>> GetActiveLogisticsLocationsForTradePartyAsync(Guid tradePartyId)
+    public async Task<IEnumerable<LogisticsLocation>> GetActiveLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag)
     {
-        return await _context.LogisticsLocation
+        var locations = _context.LogisticsLocation
             .AsNoTracking()
             .Where(x => x.TradePartyId == tradePartyId)
             .Where(loc => loc.ApprovalStatus != LogisticsLocationApprovalStatus.Rejected)
             .Where(loc => !loc.IsRemoved)
-            .Include(x => x.Address)
-            .ToListAsync();
+            .Include(x => x.Address) as IQueryable<LogisticsLocation>;
+
+        if (!string.IsNullOrEmpty(NI_GBFlag))
+            locations = locations.Where(loc => loc.NI_GBFlag == NI_GBFlag);
+
+        locations = locations.OrderBy(loc => loc.CreatedDate);
+
+        return await locations.ToListAsync();
     }
 
-    public async Task<IEnumerable<LogisticsLocation>> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId)
+    public async Task<IEnumerable<LogisticsLocation>> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag)
     {
-        return await _context.LogisticsLocation
+        var locations = _context.LogisticsLocation
             .AsNoTracking()
             .Where(x => x.TradePartyId == tradePartyId)
-            .Include(x => x.Address)
-            .ToListAsync();
+            .Include(x => x.Address) as IQueryable<LogisticsLocation>;
+
+        if (!string.IsNullOrEmpty(NI_GBFlag))
+            locations = locations.Where(loc => loc.NI_GBFlag == NI_GBFlag);
+
+        locations = locations.OrderBy(loc => loc.CreatedDate);
+
+        return await locations.ToListAsync();
     }
 
     public void RemoveLogisticsLocation(LogisticsLocation logisticsLocation)
@@ -99,8 +111,8 @@ public class EstablishmentRepository : IEstablishmentRepository
             && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Rejected
             && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Removed
             && !loc.IsRemoved);
-        
-        if (exceptThisLocationId != null) 
+
+        if (exceptThisLocationId != null)
         {
             query = query.Where(loc => loc.Id != exceptThisLocationId);
         }
