@@ -131,9 +131,9 @@ public class EstablishmentsController : ControllerBase
                 string searchTermLowerCase = searchTerm.ToLower();
 
                 result.Items = result.Items.Where(
-                    logisticslocation => logisticslocation.Name!.ToLower().Contains(searchTermLowerCase) == true ||
-                    logisticslocation.RemosEstablishmentSchemeNumber!.ToLower().Contains(searchTermLowerCase) == true ||
-                    logisticslocation.Address!.PostCode!.ToLower().Contains(searchTermLowerCase) == true).ToList();
+                    logisticslocation => logisticslocation.Name!.ToLower().Contains(searchTermLowerCase) ||
+                    logisticslocation.RemosEstablishmentSchemeNumber!.ToLower().Contains(searchTermLowerCase) ||
+                    logisticslocation.Address!.PostCode!.ToLower().Contains(searchTermLowerCase)).ToList();
             }
         }
         catch (Exception ex)
