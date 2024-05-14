@@ -92,13 +92,14 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         public async Task<PagedList<LogisticsLocationDto>?> GetActiveLogisticsLocationsForTradePartyAsync(
             Guid tradePartyId, 
             string? NI_GBFlag, 
+            string? searchTerm, 
             int pageNumber = 1, 
             int pageSize = 50)
         {
             if (!await _tradePartyRepository.TradePartyExistsAsync(tradePartyId))
                 return null;
 
-            var locations = await _establishmentRepository.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag);
+            var locations = await _establishmentRepository.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm);
             var locationDtos = _mapper.Map<IEnumerable<LogisticsLocationDto>>(locations);
             var pageList = locationDtos.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             return new PagedList<LogisticsLocationDto>(pageList, locationDtos.Count(), pageNumber, pageSize);
@@ -108,13 +109,14 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         public async Task<PagedList<LogisticsLocationDto>?> GetAllLogisticsLocationsForTradePartyAsync(
             Guid tradePartyId, 
             string? NI_GBFlag, 
+            string? searchTerm, 
             int pageNumber = 1, 
             int pageSize = 50)
         {
             if (!await _tradePartyRepository.TradePartyExistsAsync(tradePartyId))
                 return null;
 
-            var locations = await _establishmentRepository.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag);
+            var locations = await _establishmentRepository.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm);
             var locationDtos = _mapper.Map<IEnumerable<LogisticsLocationDto>>(locations.Where(loc => !loc.IsRemoved));
             var pageList = locationDtos.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             return new PagedList<LogisticsLocationDto>(pageList, locationDtos.Count(), pageNumber, pageSize);
@@ -198,7 +200,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         public async Task<string> GenerateEstablishmentRemosSchemeNumber(Guid tradePartyId)
         {
             var tradeParty = await _tradePartyRepository.GetTradePartyAsync(tradePartyId);
-            var locations = await _establishmentRepository.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, string.Empty);
+            var locations = await _establishmentRepository.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, string.Empty, string.Empty);
 
             // +1 includes the newly created location about to be created
             var totalLocations = locations.Count() + 1;

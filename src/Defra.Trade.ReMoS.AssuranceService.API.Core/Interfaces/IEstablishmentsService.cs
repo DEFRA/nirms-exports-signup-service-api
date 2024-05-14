@@ -9,8 +9,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces
         public Task<LogisticsLocationDto?> GetLogisticsLocationByIdAsync(Guid id);
         public Task<IEnumerable<LogisticsLocationDto>?> GetAllLogisticsLocationsAsync();
         public Task<IEnumerable<LogisticsLocationDto>?> GetLogisticsLocationsByPostcodeAsync(string postcode);
-        public Task<PagedList<LogisticsLocationDto>?> GetActiveLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, int pageNumber = 1, int pageSize = 50);
-        public Task<PagedList<LogisticsLocationDto>?> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, int pageNumber = 1, int pageSize = 50);
+        public Task<PagedList<LogisticsLocationDto>?> GetActiveLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, string? searchTerm, int pageNumber = 1, int pageSize = 50);
+        public Task<PagedList<LogisticsLocationDto>?> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, string? searchTerm, int pageNumber = 1, int pageSize = 50);
         public Task<LogisticsLocationDto?> AddLogisticsLocationAsync(Guid tradePartyId, LogisticsLocationDto dto);
         Task<LogisticsLocationDto?> UpdateLogisticsLocationAsync(Guid id, LogisticsLocationDto logiticsLocationRequest);
         Task<bool> RemoveLogisticsLocationAsync(Guid id);
