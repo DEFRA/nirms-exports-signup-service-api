@@ -65,7 +65,7 @@ public class EstablishmentRepository : IEstablishmentRepository
         _context.LogisticsLocation.Update(logisticsLocation);
     }
 
-    public async Task<IEnumerable<LogisticsLocation>> GetActiveLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag)
+    public async Task<IEnumerable<LogisticsLocation>> GetActiveLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, string? searchTerm)
     {
         var locations = _context.LogisticsLocation
             .AsNoTracking()
@@ -77,12 +77,15 @@ public class EstablishmentRepository : IEstablishmentRepository
         if (!string.IsNullOrEmpty(NI_GBFlag))
             locations = locations.Where(loc => loc.NI_GBFlag == NI_GBFlag);
 
+        if (!string.IsNullOrEmpty(searchTerm))
+            locations = locations.Where(loc => loc.Name!.ToLower().Contains(searchTerm) || loc.RemosEstablishmentSchemeNumber!.ToLower().Contains(searchTerm) || loc.Address!.PostCode!.ToLower().Contains(searchTerm));
+
         locations = locations.OrderBy(loc => loc.CreatedDate);
 
         return await locations.ToListAsync();
     }
 
-    public async Task<IEnumerable<LogisticsLocation>> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag)
+    public async Task<IEnumerable<LogisticsLocation>> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, string? searchTerm)
     {
         var locations = _context.LogisticsLocation
             .AsNoTracking()
@@ -91,6 +94,9 @@ public class EstablishmentRepository : IEstablishmentRepository
 
         if (!string.IsNullOrEmpty(NI_GBFlag))
             locations = locations.Where(loc => loc.NI_GBFlag == NI_GBFlag);
+
+        if (!string.IsNullOrEmpty(searchTerm))
+            locations = locations.Where(loc => loc.Name!.ToLower().Contains(searchTerm) || loc.RemosEstablishmentSchemeNumber!.ToLower().Contains(searchTerm) || loc.Address!.PostCode!.ToLower().Contains(searchTerm));
 
         locations = locations.OrderBy(loc => loc.CreatedDate);
 

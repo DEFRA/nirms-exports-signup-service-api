@@ -2,6 +2,7 @@
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 
@@ -118,28 +119,20 @@ public class EstablishmentsController : ControllerBase
 
         try
         {
-            if (includeRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, pageNumber, pageSize);
-            else result = await _establishmentsService.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, pageNumber, pageSize);
+            if (includeRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm, pageNumber, pageSize);
+            else result = await _establishmentsService.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm, pageNumber, pageSize);
             
             if (result == null)
             {
                 return NotFound("No trade party found");
             }
 
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                string searchTermLowerCase = searchTerm.ToLower();
-
-                result.Items = result.Items.Where(
-                    logisticslocation => logisticslocation.Name!.ToLower().Contains(searchTermLowerCase) ||
-                    logisticslocation.RemosEstablishmentSchemeNumber!.ToLower().Contains(searchTermLowerCase) ||
-                    logisticslocation.Address!.PostCode!.ToLower().Contains(searchTermLowerCase)).ToList();
-            }
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
+
         return Ok(result);
     }
 
