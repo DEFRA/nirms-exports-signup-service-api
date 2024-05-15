@@ -1,6 +1,8 @@
 ﻿using Defra.Trade.Address.V1.ApiClient.Model;
+using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 
@@ -90,30 +92,47 @@ public class EstablishmentsController : ControllerBase
     /// Get all locations belonging to the trade party
     /// </summary>
     /// <param name="tradePartyId"></param>
-    /// <param name="isRejected"></param>
+    /// <param name="includeRejected"></param>
+    /// <param name="searchTerm"></param>
+    /// <param name="NI_GBFlag"></param>
+    /// <param name="pageNumber"></param>
+    /// <param name="pageSize"></param>
     /// <returns>IEnumerable of LogisticLocationDTO</returns>
     [HttpGet("Party/{tradePartyId}", Name = "GetLogisticsLocationsForTradePartyAsync")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<LogisticsLocationDto>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(Guid tradePartyId, [FromQuery(Name = "isRejected")] bool isRejected)
+    public async Task<IActionResult> GetLogisticsLocationsForTradePartyAsync(
+        Guid tradePartyId,
+        [FromQuery(Name = "includeRejected")] bool includeRejected,
+        [FromQuery(Name = "searchTerm")] string? searchTerm,
+        [FromQuery(Name = "ni_gbFlag")] string? NI_GBFlag,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 50)
     {
+        const int maxPageSize = 50;
+        pageSize = (pageSize > maxPageSize) ? maxPageSize : pageSize;
+
         _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationsForTradePartyAsync));
 
-        IEnumerable<LogisticsLocationDto>? result;
+        PagedList<LogisticsLocationDto>? result;
+
         try
         {
-            if (isRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId);
-            else result = await _establishmentsService.GetLogisticsLocationsForTradePartyAsync(tradePartyId);
+            if (includeRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm, pageNumber, pageSize);
+            else result = await _establishmentsService.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm, pageNumber, pageSize);
+            
             if (result == null)
             {
-                return NotFound("No trade party found found");
+                return NotFound("No trade party found");
             }
+
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
+
         return Ok(result);
     }
 
@@ -162,18 +181,19 @@ public class EstablishmentsController : ControllerBase
 
         try
         {
-            if (await _establishmentsService.EstablishmentAlreadyExists(dto))
+            if (await _establishmentsService.EstablishmentAlreadyExists(dto, tradePartyId))
             {
                 return BadRequest("Establishment already exists");
             }
 
             createdLocation = await _establishmentsService.AddLogisticsLocationAsync(tradePartyId, dto);
+
             if (createdLocation != null)
             {
                 return CreatedAtRoute("GetLogisticsLocationByIdAsync", new { id = createdLocation.Id }, createdLocation.Id);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -184,31 +204,31 @@ public class EstablishmentsController : ControllerBase
     /// Updates logistics location
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="logiticsLocationRequest"></param>
+    /// <param name="request"></param>
     /// <returns>No content</returns>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    public async Task<IActionResult> UpdateLogisticsLocationAsync(Guid id, LogisticsLocationDto logiticsLocationRequest)
+    public async Task<IActionResult> UpdateLogisticsLocationAsync(Guid id, LogisticsLocationDto request)
     {
         _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(UpdateLogisticsLocationAsync));
 
         LogisticsLocationDto? establishmentDto;
         try
         {
-            if (!logiticsLocationRequest.IsRemoved && await _establishmentsService.EstablishmentAlreadyExists(logiticsLocationRequest))
+            if (!request.IsRemoved && await _establishmentsService.EstablishmentAlreadyExists(request, request.TradePartyId!.Value))
             {
                 return BadRequest("Establishment already exists");
             }
 
-            establishmentDto = await _establishmentsService.UpdateLogisticsLocationAsync(id, logiticsLocationRequest);
+            establishmentDto = await _establishmentsService.UpdateLogisticsLocationAsync(id, request);
             if (establishmentDto == null)
             {
                 return NotFound("No establishments found");
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -291,9 +311,9 @@ public class EstablishmentsController : ControllerBase
             if (result == null)
             {
                 return NotFound("No establishments found");
-            }  
+            }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -304,25 +324,25 @@ public class EstablishmentsController : ControllerBase
     /// Updates logistics location
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="logiticsLocationRequest"></param>
+    /// <param name="request"></param>
     /// <returns>No content</returns>
     [HttpPut("SelfServe/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
-    public async Task<IActionResult> UpdateLogisticsLocationSelfServeAsync(Guid id, LogisticsLocationDto logiticsLocationRequest)
+    public async Task<IActionResult> UpdateLogisticsLocationSelfServeAsync(Guid id, LogisticsLocationDto request)
     {
         _logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(UpdateLogisticsLocationSelfServeAsync));
 
         LogisticsLocationDto? establishmentDto;
         try
         {
-            if (!logiticsLocationRequest.IsRemoved && await _establishmentsService.EstablishmentAlreadyExists(logiticsLocationRequest))
+            if (!request.IsRemoved && await _establishmentsService.EstablishmentAlreadyExists(request, request.TradePartyId!.Value))
             {
                 return BadRequest("Establishment already exists");
             }
 
-            establishmentDto = await _establishmentsService.UpdateLogisticsLocationSelfServeAsync(id, logiticsLocationRequest);
+            establishmentDto = await _establishmentsService.UpdateLogisticsLocationSelfServeAsync(id, request);
             if (establishmentDto == null)
             {
                 return NotFound("No establishments found");

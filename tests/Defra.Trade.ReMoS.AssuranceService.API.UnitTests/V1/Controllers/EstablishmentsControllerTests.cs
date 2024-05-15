@@ -1,7 +1,10 @@
 ﻿using Defra.Trade.Address.V1.ApiClient.Model;
+using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
+using Microsoft.Azure.Management.AppService.Fluent.Models;
+using Microsoft.Azure.Management.Sql.Fluent.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
 #pragma warning disable CS8602
@@ -30,7 +33,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             var expected = _systemUnderTest.CreatedAtRoute("GetLogisticsLocationByIdAsync", new { id = logisticsLocation.Id }, logisticsLocation.Id);
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.AddLogisticsLocationAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -50,7 +53,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             LogisticsLocationDto? nullLocation = null;
 
-            _mockEstablishmentsService.Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+            _mockEstablishmentsService.Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService.Setup(x => x.AddLogisticsLocationAsync(It.IsAny<Guid>() ,It.IsAny<LogisticsLocationDto>()))
                 .ReturnsAsync(nullLocation);
@@ -68,8 +71,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //arrange
             var dto = GenerateLLDTO();
             _mockEstablishmentsService
-            .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
-            .ThrowsAsync(new Exception("Internal error"));
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
+                .ThrowsAsync(new Exception("Internal error"));
 
             //act
             var results = await _systemUnderTest.AddLogisticsLocationToTradePartyAsync(dto.TradePartyId.Value, dto);
@@ -87,7 +90,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             var expected = _systemUnderTest.BadRequest("Establishment already exists");
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(true);
 
             //act
@@ -234,71 +237,79 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
         }
 
-        [Test]
+		[Test]
         public async Task GetLogisticsLocationsForTradePartyAsyncReturnsSuccess()
         {
             //arrange
             var logisticsLocation = GenerateLLDTO();
-            var list = new List<LogisticsLocationDto> { logisticsLocation };
+            var listLocations = new List<LogisticsLocationDto>();
+            listLocations.Add(logisticsLocation);
+            var list = new PagedList<LogisticsLocationDto>(listLocations, 1,1,1);
             var expected = _systemUnderTest.Ok(list);
-            _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>())).Returns(Task.FromResult(list.AsEnumerable())!);
+            _mockEstablishmentsService
+                .Setup(x => x.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>(),It.IsAny<int>()))
+                .Returns(Task.FromResult(list)!);
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false);
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, null, null);
 
-            //assert
-            result.Should().BeEquivalentTo(expected);
+			//assert
+			result.Should().BeEquivalentTo(expected);
         }
 
         [Test]
         public async Task GetLogisticsLocationsForTradePartyAsync_ReturnsOk_ForEmptyListOfEstablishments()
         {
             //arrange
-            _mockEstablishmentsService.Setup(action => action.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>())).ReturnsAsync(new List<LogisticsLocationDto>());
+            _mockEstablishmentsService
+                .Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(),It.IsAny<string>(), It.IsAny<string?>(), 1,99))
+                .ReturnsAsync(new PagedList<LogisticsLocationDto>());
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), false);
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), false, "", "");
 
-            //assert
-            result.Should().BeEquivalentTo(_systemUnderTest.Ok());
+			//assert
+			result.Should().BeEquivalentTo(_systemUnderTest.Ok());
         }
 
-        [Test]
+		[Test]
         public async Task GetAllLogisticsLocationsForTradePartyAsync_ReturnsOk_ForEmptyListOfEstablishments()
         {
             //arrange
-            _mockEstablishmentsService.Setup(action => action.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>())).ReturnsAsync(new List<LogisticsLocationDto>());
+            _mockEstablishmentsService
+                .Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(new PagedList<LogisticsLocationDto>());
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), true);
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), false, "", "");
 
-            //assert
-            result.Should().BeEquivalentTo(_systemUnderTest.Ok());
+			//assert
+			result.Should().BeEquivalentTo(_systemUnderTest.Ok());
         }
 
-
-        [Test]
+		[Test]
         public async Task GetLogisticsLocationsForTradePartyAsyncReturnsBadRequest()
         {
             //arrange
-            _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>()))
+            _mockEstablishmentsService
+                .Setup(x => x.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ThrowsAsync(new Exception());
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false);
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, "", "");
 
-            //assert
-            result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
+			//assert
+			result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
         }
 
-        [Test]
+		[Test]
         public async Task UpdateLogisticsLocationAsync_Returns_Success()
         {
             //arrange
             var location = GetLogisticsLocation();
             var expected = _systemUnderTest.NoContent();
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -311,7 +322,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             result.Should().BeEquivalentTo(expected);
         }
 
-
         [Test]
         public async Task UpdateLogisticsLocationSelfServeAsync_Returns_Success()
         {
@@ -319,7 +329,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var location = GetLogisticsLocation();
             var expected = _systemUnderTest.NoContent();
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationSelfServeAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -340,7 +350,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             location.ApprovalStatus = LogisticsLocationApprovalStatus.Removed;
             var expected = _systemUnderTest.NoContent();
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationSelfServeAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -362,7 +372,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             var expected = _systemUnderTest.BadRequest("Establishment already exists");
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(true);
 
             //act
@@ -381,7 +391,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var dto = GenerateLLDTO();
             var expected = _systemUnderTest.BadRequest("Establishment already exists");
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(true);
 
             //act
@@ -397,7 +407,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //arrange
             LogisticsLocationDto? location = null;
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -416,7 +426,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //arrange
             LogisticsLocationDto? location = null;
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
             _mockEstablishmentsService
                 .Setup(x => x.UpdateLogisticsLocationSelfServeAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
@@ -434,7 +444,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         {
             //arrange                        
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception());
 
             //act
@@ -449,7 +459,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         {
             //arrange                        
             _mockEstablishmentsService
-                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>()))
+                .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception());
 
             //act

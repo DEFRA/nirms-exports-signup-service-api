@@ -10,6 +10,7 @@ using Defra.Trade.ReMoS.AssuranceService.API.Domain.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
+using System;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Core.UnitTests.Services;
 
@@ -351,14 +352,14 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(true)!);
-        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid)).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetLogisticsLocationsForTradePartyAsync(guid);
+        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", null);
 
         //Assert
         result.Should().NotBeNull();
-        result!.Count().Should().Be(1);
+        result!.Items.Count.Should().Be(1);
     }
 
     [Test]
@@ -377,10 +378,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(false)!);
-        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid)).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetLogisticsLocationsForTradePartyAsync(guid);
+        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", null);
 
         //Assert
         result.Should().BeNull();
@@ -410,14 +411,14 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation, logisticLocationRejected };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(true)!);
-        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid)).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid);
+        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", null);
 
         //Assert
         result.Should().NotBeNull();
-        result!.Count().Should().Be(2);
+        result!.Items.Count.Should().Be(2);
     }
 
     [Test]
@@ -436,10 +437,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(false)!);
-        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid)).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid);
+        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", null);
 
         //Assert
         result.Should().BeNull();
@@ -611,7 +612,7 @@ public class EstablishmentsServiceTests
             }
         };
 
-        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId)).Returns(Task.FromResult(locations.AsEnumerable()));
+        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(locations.AsEnumerable()));
         _mockTradePartyRepository.Setup(action => action.GetTradePartyAsync(tradePartyId)).ReturnsAsync(tradeParty);
 
         var remosNo = await _sut!.GenerateEstablishmentRemosSchemeNumber(tradePartyId);
@@ -634,6 +635,7 @@ public class EstablishmentsServiceTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<Guid>(),
                 It.IsAny<Guid>()))
             .Returns(Task.FromResult(false));
 
@@ -652,6 +654,7 @@ public class EstablishmentsServiceTests
         {
             Name = "Test Name",
             Id = Guid.NewGuid(),
+            TradePartyId = Guid.NewGuid(),
             Address = new TradeAddressDto { Id = new Guid() }
         };
         _mockEstablishmentRepository.Setup(
@@ -659,11 +662,12 @@ public class EstablishmentsServiceTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<Guid>(),
                 It.IsAny<Guid>()))
             .Returns(Task.FromResult(true));
 
         //Act
-        var result = await _sut!.EstablishmentAlreadyExists(logisticsLocationAddDto);
+        var result = await _sut!.EstablishmentAlreadyExists(logisticsLocationAddDto, logisticsLocationAddDto.TradePartyId);
 
         //Assert
         result.Should().Be(true);
@@ -685,6 +689,7 @@ public class EstablishmentsServiceTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<Guid>(),
                 It.IsAny<Guid>()))
             .Returns(Task.FromResult(false));
 
@@ -713,6 +718,7 @@ public class EstablishmentsServiceTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<string>(),
+                It.IsAny<Guid>(),
                 It.IsAny<Guid>()))
             .Returns(Task.FromResult(false));
 
