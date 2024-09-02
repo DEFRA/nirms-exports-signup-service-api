@@ -34,3 +34,4 @@ extends:
     sqlModelName: 'Defra.Trade.ReMoS.AssuranceService.API'
     useMigrations: true
     releaseUpperEnvs: true
+    buildWithDotNetCoreCLI: true
