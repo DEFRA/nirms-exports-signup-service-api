@@ -22,7 +22,7 @@ resources:
     - repository: PipelineCommon
       name: DEFRA-TRD/Defra.TRD.Pipeline.Common
       type: git
-      ref: feature/rc-sqlmodel-change
+      ref: refs/heads/master
 
 extends:
   template: /templates/basic-sqlmodel-deploy.yaml@PipelineCommon
@@ -34,3 +34,4 @@ extends:
     sqlModelName: 'Defra.Trade.ReMoS.AssuranceService.API'
     useMigrations: true
     releaseUpperEnvs: true
+    buildWithDotNetCoreCLI: true
