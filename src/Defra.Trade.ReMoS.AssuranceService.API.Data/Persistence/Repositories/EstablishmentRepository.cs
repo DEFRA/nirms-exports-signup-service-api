@@ -105,7 +105,7 @@ public class EstablishmentRepository : IEstablishmentRepository
         return await locations.ToListAsync();
     }
 
-    public IQueryable<LogisticsLocation> sortClauseAsync(string? sortColumn, string? sortDirection, IQueryable<LogisticsLocation> locations)
+    public static IQueryable<LogisticsLocation> sortClauseAsync(string? sortColumn, string? sortDirection, IQueryable<LogisticsLocation> locations)
     {
         if (string.IsNullOrEmpty(sortColumn))
             locations = locations.OrderByDescending(loc => loc.LastModifiedDate);
