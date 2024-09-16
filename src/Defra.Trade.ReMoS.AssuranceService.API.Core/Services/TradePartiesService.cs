@@ -238,7 +238,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         }
 
         #region private methods
-
         private string AssignRemosBusinessSchemeNumber(TradeParty party)
         {
             return _tradePartyRepository.AssignRemosBusinessSchemeNumber(party).Result;
@@ -394,7 +393,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
                 Console.WriteLine(ex.ToString());
             }
         }
-
         #endregion private methods
     }
 }
