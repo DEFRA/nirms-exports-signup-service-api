@@ -4,7 +4,9 @@ using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Repositories;
 
@@ -80,48 +82,7 @@ public class EstablishmentRepository : IEstablishmentRepository
         if (!string.IsNullOrEmpty(searchTerm))
             locations = locations.Where(loc => loc.Name!.ToLower().Contains(searchTerm) || loc.RemosEstablishmentSchemeNumber!.ToLower().Contains(searchTerm) || loc.Address!.PostCode!.ToLower().Contains(searchTerm));
 
-        if (string.IsNullOrEmpty(sortColumn))
-            locations = locations.OrderByDescending(loc => loc.LastModifiedDate);
-        else
-        {
-            switch (sortColumn)
-            {
-                case "0":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
-                        locations = locations.OrderBy(loc => loc.Name);
-                    if (sortDirection == "descending")
-                        locations = locations.OrderByDescending(loc => loc.Name);
-                    break;
-
-                case "1":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
-                        locations = locations.OrderBy(loc => loc.Address!.PostCode);
-                    if (sortDirection == "descending")
-                        locations = locations.OrderByDescending(loc => loc.Address!.PostCode);
-                    break;
-
-                case "2":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
-                        locations = locations.OrderBy(loc => loc.RemosEstablishmentSchemeNumber);
-                    if (sortDirection == "descending")
-                        locations = locations.OrderByDescending(loc => loc.RemosEstablishmentSchemeNumber);
-                    break;
-
-                case "3":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
-                        locations = locations.OrderBy(loc => loc.ApprovalStatus);
-                    if (sortDirection == "descending")
-                        locations = locations.OrderByDescending(loc => loc.ApprovalStatus);
-                    break;
-
-                case "4":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
-                        locations = locations.OrderBy(loc => loc.LastModifiedDate);
-                    if (sortDirection == "descending")
-                        locations = locations.OrderByDescending(loc => loc.LastModifiedDate);
-                    break;
-            }
-        }
+        locations = sortClauseAsync(sortColumn, sortDirection, locations);
 
         return await locations.ToListAsync();
     }
@@ -139,6 +100,13 @@ public class EstablishmentRepository : IEstablishmentRepository
         if (!string.IsNullOrEmpty(searchTerm))
             locations = locations.Where(loc => loc.Name!.ToLower().Contains(searchTerm) || loc.RemosEstablishmentSchemeNumber!.ToLower().Contains(searchTerm) || loc.Address!.PostCode!.ToLower().Contains(searchTerm));
 
+        locations = sortClauseAsync(sortColumn, sortDirection, locations);
+
+        return await locations.ToListAsync();
+    }
+
+    public IQueryable<LogisticsLocation> sortClauseAsync(string? sortColumn, string? sortDirection, IQueryable<LogisticsLocation> locations)
+    {
         if (string.IsNullOrEmpty(sortColumn))
             locations = locations.OrderByDescending(loc => loc.LastModifiedDate);
         else
@@ -181,7 +149,7 @@ public class EstablishmentRepository : IEstablishmentRepository
                     break;
             }
         }
-        return await locations.ToListAsync();
+        return locations;
     }
 
     public void RemoveLogisticsLocation(LogisticsLocation logisticsLocation)
