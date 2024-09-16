@@ -2,6 +2,7 @@
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Management.Sql.Fluent.Models;
 using System.Diagnostics;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
@@ -85,7 +86,6 @@ public class EstablishmentsController : ControllerBase
             return BadRequest(ex.Message);
         }
         return Ok(result);
-
     }
 
     /// <summary>
@@ -94,6 +94,8 @@ public class EstablishmentsController : ControllerBase
     /// <param name="tradePartyId"></param>
     /// <param name="includeRejected"></param>
     /// <param name="searchTerm"></param>
+    /// <param name="sortColumn"></param>
+    /// <param name="sortDirection"></param>
     /// <param name="NI_GBFlag"></param>
     /// <param name="pageNumber"></param>
     /// <param name="pageSize"></param>
@@ -106,6 +108,8 @@ public class EstablishmentsController : ControllerBase
         Guid tradePartyId,
         [FromQuery(Name = "includeRejected")] bool includeRejected,
         [FromQuery(Name = "searchTerm")] string? searchTerm,
+        [FromQuery(Name = "sortColumn")] string? sortColumn,
+        [FromQuery(Name = "sortDirection")] string? sortDirection,
         [FromQuery(Name = "ni_gbFlag")] string? NI_GBFlag,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 50)
@@ -119,14 +123,13 @@ public class EstablishmentsController : ControllerBase
 
         try
         {
-            if (includeRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm, pageNumber, pageSize);
-            else result = await _establishmentsService.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm, pageNumber, pageSize);
-            
+            if (includeRejected) result = await _establishmentsService.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm, sortColumn, sortDirection, pageNumber, pageSize);
+            else result = await _establishmentsService.GetActiveLogisticsLocationsForTradePartyAsync(tradePartyId, NI_GBFlag, searchTerm, sortColumn, sortDirection, pageNumber, pageSize);
+
             if (result == null)
             {
                 return NotFound("No trade party found");
             }
-
         }
         catch (Exception ex)
         {

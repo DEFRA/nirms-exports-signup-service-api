@@ -351,10 +351,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(true)!);
-        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", null);
+        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", "", null, null);
 
         //Assert
         result.Should().NotBeNull();
@@ -377,10 +377,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(false)!);
-        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", null);
+        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", "", null, null);
 
         //Assert
         result.Should().BeNull();
@@ -410,10 +410,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation, logisticLocationRejected };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(true)!);
-        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", null);
+        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", "", null, null);
 
         //Assert
         result.Should().NotBeNull();
@@ -436,10 +436,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(false)!);
-        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", null);
+        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", "", null, null);
 
         //Assert
         result.Should().BeNull();
@@ -609,7 +609,7 @@ public class EstablishmentsServiceTests
             }
         };
 
-        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(locations.AsEnumerable()));
+        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(locations.AsEnumerable()));
         _mockTradePartyRepository.Setup(action => action.GetTradePartyAsync(tradePartyId)).ReturnsAsync(tradeParty);
 
         var remosNo = await _sut!.GenerateEstablishmentRemosSchemeNumber(tradePartyId);
