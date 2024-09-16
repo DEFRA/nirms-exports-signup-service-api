@@ -50,7 +50,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             await _tradePartyRepository.AddTradePartyAsync(tradeParty);
             await _tradePartyRepository.SaveChangesAsync();
             return _mapper.Map<TradePartyDto>(tradeParty);
-
         }
 
         public async Task<IEnumerable<TradePartyDto>> GetTradePartiesAsync()
@@ -99,7 +98,14 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
                 tradeParty.FboNumber = null;
                 tradeParty.PhrNumber = null;
             }
-
+            if (tradePartyRequest.FboPhrOption == "fbo")
+            {
+                tradeParty.PhrNumber = null;
+            }
+            if (tradePartyRequest.FboPhrOption == "phr")
+            {
+                tradeParty.FboNumber = null;
+            }
             var updatedTradeParty = _tradePartyRepository.UpdateTradeParty(tradeParty);
             await _tradePartyRepository.SaveChangesAsync();
 
@@ -173,7 +179,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
             bool authSignatoryContactDetailsSaved = tradeParty.AuthorisedSignatory?.Name != null
                 || tradeParty.AuthorisedSignatory?.Position != null
                 || tradeParty.AuthorisedSignatory?.EmailAddress != null;
-
 
             if (tradePartyRequest.Contact?.IsAuthorisedSignatory == false && authSignatoryRequestContactDetailsAreEmpty && authSignatoryContactDetailsSaved)
             {
@@ -254,7 +259,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         private async Task SendSignUpApplication(Guid tradepartyId)
         {
             var tradeParty = await FindTradeParty(tradepartyId);
-            var logisticsLocations = await _establishmentRepository.GetActiveLogisticsLocationsForTradePartyAsync(tradepartyId, string.Empty, string.Empty);
+            var logisticsLocations = await _establishmentRepository.GetActiveLogisticsLocationsForTradePartyAsync(tradepartyId, string.Empty, string.Empty, string.Empty, string.Empty);
             try
             {
                 var signUpPayload = JsonSerializer.Serialize(new SignUpApplicationMessage
@@ -308,7 +313,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
 
                 // Env variables will be added to secrets once we have details from TP
                 await SendtoServiceBus(signUpPayload, "sus.remos.signup", tradeParty!.Id);
-                
             }
             catch (Exception ex)
             {
@@ -348,7 +352,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
                         : null,
                     }
                 });
-                await SendtoServiceBus(selfServeMessagePayload, "sus.remos.update", tradeParty!.Id ,"2", "Complete");
+                await SendtoServiceBus(selfServeMessagePayload, "sus.remos.update", tradeParty!.Id, "2", "Complete");
             }
             catch (Exception ex)
             {
@@ -377,7 +381,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
                 message.ApplicationProperties.Add("Status", status);
                 message.ApplicationProperties.Add("TimestampUtc", ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds());
 
-
                 if (!messageBatch.TryAddMessage(message))
                 {
                     throw new InvalidOperationException($"Message is too large to fit in the batch.");
@@ -393,4 +396,3 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.Core.Services
         #endregion private methods
     }
 }
-

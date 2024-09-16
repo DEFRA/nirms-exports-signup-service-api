@@ -3,7 +3,10 @@ using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Repositories;
 
@@ -23,7 +26,6 @@ public class EstablishmentRepository : IEstablishmentRepository
         await _context.LogisticsLocation.AddAsync(location);
         await _context.SaveChangesAsync();
         return location;
-
     }
 
     public async Task<LogisticsLocation?> GetLogisticsLocationByIdAsync(Guid id)
@@ -65,7 +67,7 @@ public class EstablishmentRepository : IEstablishmentRepository
         _context.LogisticsLocation.Update(logisticsLocation);
     }
 
-    public async Task<IEnumerable<LogisticsLocation>> GetActiveLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, string? searchTerm)
+    public async Task<IEnumerable<LogisticsLocation>> GetActiveLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, string? searchTerm, string? sortColumn, string? sortDirection)
     {
         var locations = _context.LogisticsLocation
             .AsNoTracking()
@@ -80,12 +82,12 @@ public class EstablishmentRepository : IEstablishmentRepository
         if (!string.IsNullOrEmpty(searchTerm))
             locations = locations.Where(loc => loc.Name!.ToLower().Contains(searchTerm) || loc.RemosEstablishmentSchemeNumber!.ToLower().Contains(searchTerm) || loc.Address!.PostCode!.ToLower().Contains(searchTerm));
 
-        locations = locations.OrderBy(loc => loc.CreatedDate);
+        locations = sortClauseAsync(sortColumn, sortDirection, locations);
 
         return await locations.ToListAsync();
     }
 
-    public async Task<IEnumerable<LogisticsLocation>> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, string? searchTerm)
+    public async Task<IEnumerable<LogisticsLocation>> GetAllLogisticsLocationsForTradePartyAsync(Guid tradePartyId, string? NI_GBFlag, string? searchTerm, string? sortColumn, string? sortDirection)
     {
         var locations = _context.LogisticsLocation
             .AsNoTracking()
@@ -98,9 +100,56 @@ public class EstablishmentRepository : IEstablishmentRepository
         if (!string.IsNullOrEmpty(searchTerm))
             locations = locations.Where(loc => loc.Name!.ToLower().Contains(searchTerm) || loc.RemosEstablishmentSchemeNumber!.ToLower().Contains(searchTerm) || loc.Address!.PostCode!.ToLower().Contains(searchTerm));
 
-        locations = locations.OrderBy(loc => loc.CreatedDate);
+        locations = sortClauseAsync(sortColumn, sortDirection, locations);
 
         return await locations.ToListAsync();
+    }
+
+    public static IQueryable<LogisticsLocation> sortClauseAsync(string? sortColumn, string? sortDirection, IQueryable<LogisticsLocation> locations)
+    {
+        if (string.IsNullOrEmpty(sortColumn))
+            locations = locations.OrderByDescending(loc => loc.LastModifiedDate);
+        else
+        {
+            switch (sortColumn)
+            {
+                case "0":
+                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
+                        locations = locations.OrderBy(loc => loc.Name);
+                    if (sortDirection == "descending")
+                        locations = locations.OrderByDescending(loc => loc.Name);
+                    break;
+
+                case "1":
+                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
+                        locations = locations.OrderBy(loc => loc.Address!.PostCode);
+                    if (sortDirection == "descending")
+                        locations = locations.OrderByDescending(loc => loc.Address!.PostCode);
+                    break;
+
+                case "2":
+                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
+                        locations = locations.OrderBy(loc => loc.RemosEstablishmentSchemeNumber);
+                    if (sortDirection == "descending")
+                        locations = locations.OrderByDescending(loc => loc.RemosEstablishmentSchemeNumber);
+                    break;
+
+                case "3":
+                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
+                        locations = locations.OrderBy(loc => loc.ApprovalStatus);
+                    if (sortDirection == "descending")
+                        locations = locations.OrderByDescending(loc => loc.ApprovalStatus);
+                    break;
+
+                case "4":
+                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
+                        locations = locations.OrderBy(loc => loc.LastModifiedDate);
+                    if (sortDirection == "descending")
+                        locations = locations.OrderByDescending(loc => loc.LastModifiedDate);
+                    break;
+            }
+        }
+        return locations;
     }
 
     public void RemoveLogisticsLocation(LogisticsLocation logisticsLocation)

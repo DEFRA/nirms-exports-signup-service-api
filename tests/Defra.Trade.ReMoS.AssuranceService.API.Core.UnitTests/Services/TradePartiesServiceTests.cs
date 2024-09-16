@@ -519,7 +519,6 @@ public class TradePartiesServiceTests
         {
             Id = Guid.Parse("21afbc5e-51b0-4538-b844-911460c05689"),
             TradeContact = new TradeContact { IsAuthorisedSignatory = true }
-
         };
 
         var tradePartyDto = new TradePartyDto
@@ -585,7 +584,7 @@ public class TradePartiesServiceTests
         //Act
         var result = await _sut!.UpdateAuthorisedSignatoryAsync(It.IsAny<Guid>(), tradePartyRequest);
 
-        //Assert        
+        //Assert
         _mockTradePartyRepository.Verify(m => m.UpsertAuthorisedSignatory(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>()), Times.Never);
 
         result?.AuthorisedSignatory?.Name.Should().Be("Test");
@@ -658,7 +657,6 @@ public class TradePartiesServiceTests
         //Act
         var result = await _sut!.UpdateTradePartyAsync(partyId, tradePartyRequest);
 
-
         //Assert
         result.Should().NotBeNull();
     }
@@ -728,7 +726,6 @@ public class TradePartiesServiceTests
         //Act
         var result = await _sut!.UpdateAuthRepSelfServeAsync(partyId, tradePartyRequest);
 
-
         //Assert
         result.Should().NotBeNull();
     }
@@ -755,7 +752,7 @@ public class TradePartiesServiceTests
             EmailAddress = "test",
             Name = "test"
         };
-        var tradePartyRequest = new TradePartyDto { Id = partyId, PartyName = "party name", FboPhrOption = "none", SignUpRequestSubmittedBy = Guid.NewGuid()};
+        var tradePartyRequest = new TradePartyDto { Id = partyId, PartyName = "party name", FboPhrOption = "none", SignUpRequestSubmittedBy = Guid.NewGuid() };
         var tradePartyEntity = new TradeParty { Id = partyId, Name = "party name" };
         _mockTradePartyRepository
             .Setup(action => action.FindTradePartyByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
@@ -768,8 +765,91 @@ public class TradePartiesServiceTests
         //Act
         var result = await _sut!.UpdateTradePartyAsync(partyId, tradePartyRequest);
 
+        //Assert
+        result.Should().NotBeNull();
+        result!.FboNumber.Should().BeNull();
+        result.PhrNumber.Should().BeNull();
+    }
+
+    [Test]
+    public async Task UpdateTradePartyAsync_FboPhrOption_Is_FBO()
+    {
+        //Arrange
+        var partyId = Guid.NewGuid();
+        var tradeContact = new TradeContact()
+        {
+            Id = Guid.NewGuid(),
+            TradePartyId = partyId,
+            PersonName = "test",
+            Position = "test",
+            Email = "test",
+            TelephoneNumber = "test"
+        };
+        var authSig = new AuthorisedSignatory()
+        {
+            Id = Guid.NewGuid(),
+            TradePartyId = partyId,
+            Position = "test",
+            EmailAddress = "test",
+            Name = "test"
+        };
+        var tradePartyRequest = new TradePartyDto { Id = partyId, PartyName = "party name", FboPhrOption = "fbo", FboNumber = "123", PhrNumber = "123", SignUpRequestSubmittedBy = Guid.NewGuid() };
+        var tradePartyEntity = new TradeParty { Id = partyId, Name = "party name" };
+        _mockTradePartyRepository
+            .Setup(action => action.FindTradePartyByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(tradePartyEntity);
+        _mockTradePartyRepository
+            .Setup(action => action.UpdateTradeParty(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>()))
+            .Returns(tradePartyEntity);
+        _mockFeatureManager.Setup(action => action.IsEnabledAsync(It.IsAny<string>())).ReturnsAsync(false);
+
+        //Act
+        var result = await _sut!.UpdateTradePartyAsync(partyId, tradePartyRequest);
 
         //Assert
         result.Should().NotBeNull();
+        result!.FboNumber.Should().NotBeNull();
+        result.PhrNumber.Should().BeNull();
+    }
+
+    [Test]
+    public async Task UpdateTradePartyAsync_FboPhrOption_Is_PHR()
+    {
+        //Arrange
+        var partyId = Guid.NewGuid();
+        var tradeContact = new TradeContact()
+        {
+            Id = Guid.NewGuid(),
+            TradePartyId = partyId,
+            PersonName = "test",
+            Position = "test",
+            Email = "test",
+            TelephoneNumber = "test"
+        };
+        var authSig = new AuthorisedSignatory()
+        {
+            Id = Guid.NewGuid(),
+            TradePartyId = partyId,
+            Position = "test",
+            EmailAddress = "test",
+            Name = "test"
+        };
+        var tradePartyRequest = new TradePartyDto { Id = partyId, PartyName = "party name", FboPhrOption = "phr", FboNumber = "123", PhrNumber = "123", SignUpRequestSubmittedBy = Guid.NewGuid() };
+        var tradePartyEntity = new TradeParty { Id = partyId, Name = "party name" };
+        _mockTradePartyRepository
+            .Setup(action => action.FindTradePartyByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(tradePartyEntity);
+        _mockTradePartyRepository
+            .Setup(action => action.UpdateTradeParty(It.IsAny<TradeParty>(), It.IsAny<CancellationToken>()))
+            .Returns(tradePartyEntity);
+        _mockFeatureManager.Setup(action => action.IsEnabledAsync(It.IsAny<string>())).ReturnsAsync(false);
+
+        //Act
+        var result = await _sut!.UpdateTradePartyAsync(partyId, tradePartyRequest);
+
+        //Assert
+        result.Should().NotBeNull();
+        result!.FboNumber.Should().BeNull();
+        result.PhrNumber.Should().NotBeNull();
     }
 }
