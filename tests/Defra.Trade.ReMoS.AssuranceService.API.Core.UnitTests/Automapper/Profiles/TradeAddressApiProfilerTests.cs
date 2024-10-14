@@ -19,7 +19,8 @@ public class TradeAddressApiProfilerTests
     public void TradeAddressApiConverter_ConvertsSimple()
     {
         // arrange
-        var source = new AddressDto("1234", null, null, null, null, null, "postcode")
+        var source = new AddressDto("1234", null, null, null, null, 0, null, 0, null, "postcode", null, null, null, null, "uprn", 0, 0
+       )
         {
             Address = "business name, some, other, string, street, town, postcode",
             ThroughfareName = "street",
@@ -50,7 +51,8 @@ public class TradeAddressApiProfilerTests
     public void TradeAddressApiConverter_ConvertsSimpleLocality()
     {
         // arrange
-        var source = new AddressDto("1234", null, null, null, null, null, "postcode")
+        var source = new AddressDto("1234", null, null, null, null, 0, null, 0, null, "postcode", null, null, null, null, "uprn", 0, 0
+       )
         {
             Address = "business name, some, other, string, street, locality, town, postcode",
             ThroughfareName = "street",
@@ -81,7 +83,8 @@ public class TradeAddressApiProfilerTests
     public void TradeAddressApiConverter_ConvertsLocality()
     {
         // arrange
-        var source = new AddressDto("1234", null, null, null, null, null, "postcode")
+        var source = new AddressDto("1234", null, null, null, null, 0, null, 0, null, "postcode", null, null, null, null, "uprn", 0, 0
+       )
         {
             Address = "12, street, locality, town, postcode",
             ThroughfareName = "street",
@@ -112,7 +115,8 @@ public class TradeAddressApiProfilerTests
     public void TradeAddressApiConverter_ConvertsHouse()
     {
         // arrange
-        var source = new AddressDto("1234", null, null, null, null, null, "postcode")
+        var source = new AddressDto("1234", null, null, null, null, 0, null, 0, null, "postcode", null, null, null, null, "uprn", 0, 0
+       )
         {
             Address = "12, street, town, postcode",
             ThroughfareName = "street",
@@ -143,7 +147,8 @@ public class TradeAddressApiProfilerTests
     public void TradeAddressApiConverter_ConvertsFlat()
     {
         // arrange
-        var source = new AddressDto("1234", null, null, null, null, null, "postcode")
+        var source = new AddressDto("1234", null, null, null, null, 0, null, 0, null, "postcode", null, null, null, null, "uprn", 0, 0
+       )
         {
             Address = "flat 1, 12, street, town, postcode",
             ThroughfareName = "street",
@@ -174,7 +179,8 @@ public class TradeAddressApiProfilerTests
     public void TradeAddressApiConverter_ConvertsBusiness()
     {
         // arrange
-        var source = new AddressDto("1234", null, null, null, null, null, "postcode")
+        var source = new AddressDto("1234", null, null, null, null, 0, null, 0, null, "postcode", null, null, null, null, "uprn", 0, 0
+       )
         {
             Address = "business name, flat 1, 12, street, town, postcode",
             ThroughfareName = "street",
@@ -205,7 +211,7 @@ public class TradeAddressApiProfilerTests
     public void TradeAddressApiConverter_ConvertsBuilding()
     {
         // arrange
-        var source = new AddressDto("1234", null, null, null, null, null, "postcode")
+        var source = new AddressDto("1234", null, null, null, null, 0, null, 0, null, "postcode", null, null, null, null, "uprn", 0, 0)
         {
             Address = "business name, building name, street, town, postcode",
             ThroughfareName = "street",
@@ -236,7 +242,8 @@ public class TradeAddressApiProfilerTests
     public void TradeAddressApiConverter_ConvertsBusinessNameAndBuildingNo()
     {
         // arrange
-        var source = new AddressDto("1234", null, null, null, null, null, "postcode")
+        var source = new AddressDto("1234", null, null, null, null, 0, null, 0, null, "postcode", null, null, null, null, "uprn", 0, 0
+       )
         {
             Address = "business name, 1A, street, town, postcode",
             BuildingName = "1A",

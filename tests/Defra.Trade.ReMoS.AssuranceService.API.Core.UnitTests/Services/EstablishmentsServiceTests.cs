@@ -28,7 +28,6 @@ public class EstablishmentsServiceTests
     [SetUp]
     public void Setup()
     {
-
         var profiles = new List<Profile>()
         {
             new TradePartyProfiler(),
@@ -100,14 +99,16 @@ public class EstablishmentsServiceTests
     {
         // arrange
         var uprn = "1234";
-        var addressDto = new AddressDto(uprn, null, null, null, null, null, postcode)
+        var addressDto = new AddressDto("1234", null, null, null, null, 0, null, 0, null, postcode, null, null, null, null, uprn, 0, 0)
         {
             Address = "Business name, Some, other, string, Street name, Town, CB11 3SN",
             PostTown = "Town",
             ThroughfareName = "Street name"
         };
+
         var addressesDto = new List<AddressDto> { addressDto };
-        _mockPlacesApi.Setup(x => x.UprnLookupAsync(uprn, null, 0)).Returns(addressesDto);
+
+        _mockPlacesApi.Setup(x => x.UprnLookupAsync(uprn, null, 0, It.IsAny<CancellationToken>())).Returns(Task.FromResult(addressesDto));
 
         // act
         var result = _sut!.GetLogisticsLocationByUprnAsync(uprn);
@@ -126,7 +127,7 @@ public class EstablishmentsServiceTests
         var postcode = "BT11 3SN";
         var streetName = "Very Long Line Value, which is over 50 characters, so should be split";
 
-        var addressDto = new AddressDto(uprn, null, null, null, null, null, postcode)
+        var addressDto = new AddressDto("1234", null, null, null, null, 0, null, 0, null, postcode, null, null, null, null, uprn, 0, 0)
         {
             Address = $"{streetName}, Some, other, string, Test, Town, CB11 3SN",
             PostTown = "Town",
@@ -134,7 +135,7 @@ public class EstablishmentsServiceTests
         };
 
         var addressesDto = new List<AddressDto> { addressDto };
-        _mockPlacesApi.Setup(x => x.UprnLookupAsync(uprn, null, 0)).Returns(addressesDto);
+        _mockPlacesApi.Setup(x => x.UprnLookupAsync(uprn, null, 0, It.IsAny<CancellationToken>())).Returns(Task.FromResult(addressesDto));
 
         // act
         var result = _sut!.GetLogisticsLocationByUprnAsync(uprn);
@@ -155,8 +156,7 @@ public class EstablishmentsServiceTests
         var uprn = "1234";
         var postcode = "BT11 3SN";
         var streetName = "Very short Line Value";
-
-        var addressDto = new AddressDto(uprn, null, null, null, null, null, postcode)
+        var addressDto = new AddressDto("1234", null, null, null, null, 0, null, 0, null, postcode, null, null, null, null, uprn, 0, 0)
         {
             Address = $"{streetName}, Some, other, string, Test, Town, CB11 3SN",
             PostTown = "Town",
@@ -164,7 +164,7 @@ public class EstablishmentsServiceTests
         };
 
         var addressesDto = new List<AddressDto> { addressDto };
-        _mockPlacesApi.Setup(x => x.UprnLookupAsync(uprn, null, 0)).Returns(addressesDto);
+        _mockPlacesApi.Setup(x => x.UprnLookupAsync(uprn, null, 0, It.IsAny<CancellationToken>())).Returns(Task.FromResult(addressesDto));
 
         // act
         var result = _sut!.GetLogisticsLocationByUprnAsync(uprn);
@@ -182,7 +182,7 @@ public class EstablishmentsServiceTests
         // arrange
         var uprn = "1234";
         List<AddressDto>? addressDto = null;
-        _mockPlacesApi.Setup(x => x.UprnLookupAsync(uprn, null, 0)).Returns(addressDto!);
+        _mockPlacesApi.Setup(x => x.UprnLookupAsync(uprn, null, 0, It.IsAny<CancellationToken>())).Returns(Task.FromResult(addressDto!));
 
         // act
         var result = _sut!.GetLogisticsLocationByUprnAsync(uprn);
@@ -196,9 +196,9 @@ public class EstablishmentsServiceTests
     {
         // arrange
         var postcode = "CB11 3SN";
-        var addressDto = new AddressDto("1234", null, null, null, null, null, postcode);
+        var addressDto = new AddressDto("1234", null, null, null, null, 0, null, 0, null, postcode, null, null, null, null, "123", 0, 0);
         var addressesDto = new List<AddressDto>() { addressDto };
-        _mockPlacesApi.Setup(x => x.PostCodeLookupAsync(postcode, null, 0)).Returns(addressesDto);
+        _mockPlacesApi.Setup(x => x.PostCodeLookupAsync(postcode, null, 0, It.IsAny<CancellationToken>())).Returns(Task.FromResult(addressesDto));
 
         // act
         var result = _sut!.GetTradeAddressApiByPostcode(postcode);
@@ -214,7 +214,7 @@ public class EstablishmentsServiceTests
         // arrange
         var postcode = "CB11 3SN";
         var addressesDto = new List<AddressDto>();
-        _mockPlacesApi.Setup(x => x.PostCodeLookupAsync(postcode, null, 0)).Throws(new Exception());
+        _mockPlacesApi.Setup(x => x.PostCodeLookupAsync(postcode, null, 0, It.IsAny<CancellationToken>())).Throws(new Exception());
 
         // act
         var result = _sut!.GetTradeAddressApiByPostcode(postcode);
@@ -273,7 +273,6 @@ public class EstablishmentsServiceTests
         result.Should().BeOfType<LogisticsLocationDto>();
     }
 
-
     [Test]
     public async Task AddLogisticsLocationAsync_AddressDoesNotExist_ReturnsNull()
     {
@@ -283,7 +282,7 @@ public class EstablishmentsServiceTests
         {
             Name = "Test Name",
             Id = Guid.NewGuid(),
-            Address = new TradeAddressDto { Id = Guid.Empty },   
+            Address = new TradeAddressDto { Id = Guid.Empty },
             TradeAddressId = Guid.NewGuid()
         };
 
@@ -352,10 +351,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(true)!);
-        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", null);
+        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", "", null, null);
 
         //Assert
         result.Should().NotBeNull();
@@ -378,10 +377,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(false)!);
-        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", null);
+        var result = await _sut!.GetActiveLogisticsLocationsForTradePartyAsync(guid, "", "", null, null);
 
         //Assert
         result.Should().BeNull();
@@ -411,10 +410,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation, logisticLocationRejected };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(true)!);
-        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", null);
+        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", "", null, null);
 
         //Assert
         result.Should().NotBeNull();
@@ -437,10 +436,10 @@ public class EstablishmentsServiceTests
 
         var list = new List<LogisticsLocation> { logisticLocation };
         _mockTradePartyRepository.Setup(action => action.TradePartyExistsAsync(guid)).Returns(Task.FromResult(false)!);
-        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
+        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(guid, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(list.AsEnumerable())!);
 
         //Act
-        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", null);
+        var result = await _sut!.GetAllLogisticsLocationsForTradePartyAsync(guid, "", "", null, null);
 
         //Assert
         result.Should().BeNull();
@@ -460,7 +459,6 @@ public class EstablishmentsServiceTests
         //Assert
         result.Should().Be(true);
     }
-
 
     [Test]
     public async Task RemoveLogisticsLocationAsync_ReturnsFalse()
@@ -517,7 +515,7 @@ public class EstablishmentsServiceTests
             ServiceBusName = "test",
             ServiceBusConnectionString = "test"
         };
-        var tradePartyEntity = new TradeParty { Id = Guid.NewGuid(), Name = "party name"};
+        var tradePartyEntity = new TradeParty { Id = Guid.NewGuid(), Name = "party name" };
         _mockEstablishmentRepository.Setup(action => action.GetLogisticsLocationByIdAsync(It.IsAny<Guid>())).Returns(Task.FromResult(locationSavedInDb)!);
         _mockEstablishmentRepository.Setup(action => action.UpdateLogisticsLocation(It.IsAny<LogisticsLocation>()));
         _mockTradePartyRepository
@@ -546,7 +544,7 @@ public class EstablishmentsServiceTests
             TradePartyId = Guid.NewGuid(),
         };
         LogisticsLocation locationSavedInDb = null!;
-        
+
         var tp = new TradePlatform()
         {
             ServiceBusName = "test",
@@ -582,8 +580,7 @@ public class EstablishmentsServiceTests
         var result = await _sut!.UpdateLogisticsLocationAsync(Guid.NewGuid(), logisticsLocationDto);
 
         //Assert
-        Assert.IsNull(result);
-            
+        Assert.That(result, Is.Null);
     }
 
     [Test]
@@ -612,7 +609,7 @@ public class EstablishmentsServiceTests
             }
         };
 
-        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(locations.AsEnumerable()));
+        _mockEstablishmentRepository.Setup(action => action.GetAllLogisticsLocationsForTradePartyAsync(tradePartyId, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>())).Returns(Task.FromResult(locations.AsEnumerable()));
         _mockTradePartyRepository.Setup(action => action.GetTradePartyAsync(tradePartyId)).ReturnsAsync(tradeParty);
 
         var remosNo = await _sut!.GenerateEstablishmentRemosSchemeNumber(tradePartyId);

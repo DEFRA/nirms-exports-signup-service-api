@@ -7,6 +7,7 @@ using Microsoft.Azure.Management.AppService.Fluent.Models;
 using Microsoft.Azure.Management.Sql.Fluent.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
+
 #pragma warning disable CS8602
 #pragma warning disable CS8629
 
@@ -15,7 +16,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
     public class EstablishmentsControllerTests
     {
         private EstablishmentsController? _systemUnderTest;
-        readonly Mock<IEstablishmentsService> _mockEstablishmentsService = new();
+        private readonly Mock<IEstablishmentsService> _mockEstablishmentsService = new();
         protected Mock<ILogger<EstablishmentsController>> _mockLogger = new();
 
         [SetUp]
@@ -55,7 +56,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
 
             _mockEstablishmentsService.Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ReturnsAsync(false);
-            _mockEstablishmentsService.Setup(x => x.AddLogisticsLocationAsync(It.IsAny<Guid>() ,It.IsAny<LogisticsLocationDto>()))
+            _mockEstablishmentsService.Setup(x => x.AddLogisticsLocationAsync(It.IsAny<Guid>(), It.IsAny<LogisticsLocationDto>()))
                 .ReturnsAsync(nullLocation);
 
             //act
@@ -176,7 +177,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         }
 
         [Test]
-
         public async Task GetEstablishmentByIdReturnsBadRequest()
         {
             //arrange
@@ -211,7 +211,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         [Test]
         public async Task GetEstablishmentByPostcodeReturnsNotFound()
         {
-            //arrange            
+            //arrange
             _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsByPostcodeAsync(It.IsAny<string>()))
              .ReturnsAsync(new List<LogisticsLocationDto>());
 
@@ -222,11 +222,10 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             result.Should().BeEquivalentTo(_systemUnderTest.NotFound("No establishments found"));
         }
 
-
         [Test]
         public async Task GetEstablishmentByPostcodeReturnsBadRequest()
         {
-            //arrange                                 
+            //arrange
             _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationsByPostcodeAsync(It.IsAny<string>()))
                 .ThrowsAsync(new Exception());
 
@@ -237,24 +236,24 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
         }
 
-		[Test]
+        [Test]
         public async Task GetLogisticsLocationsForTradePartyAsyncReturnsSuccess()
         {
             //arrange
             var logisticsLocation = GenerateLLDTO();
             var listLocations = new List<LogisticsLocationDto>();
             listLocations.Add(logisticsLocation);
-            var list = new PagedList<LogisticsLocationDto>(listLocations, 1,1,1);
+            var list = new PagedList<LogisticsLocationDto>(listLocations, 1, 1, 1);
             var expected = _systemUnderTest.Ok(list);
             _mockEstablishmentsService
-                .Setup(x => x.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>(),It.IsAny<int>()))
+                .Setup(x => x.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(list)!);
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, null, null);
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, null, null, null, null);
 
-			//assert
-			result.Should().BeEquivalentTo(expected);
+            //assert
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -262,47 +261,47 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         {
             //arrange
             _mockEstablishmentsService
-                .Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(),It.IsAny<string>(), It.IsAny<string?>(), 1,99))
+                .Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>(), 1, 99))
                 .ReturnsAsync(new PagedList<LogisticsLocationDto>());
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), false, "", "");
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), false, "", "", "", "");
 
-			//assert
-			result.Should().BeEquivalentTo(_systemUnderTest.Ok());
+            //assert
+            result.Should().BeEquivalentTo(_systemUnderTest.Ok());
         }
 
-		[Test]
+        [Test]
         public async Task GetAllLogisticsLocationsForTradePartyAsync_ReturnsOk_ForEmptyListOfEstablishments()
         {
             //arrange
             _mockEstablishmentsService
-                .Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(action => action.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(new PagedList<LogisticsLocationDto>());
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), false, "", "");
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.NewGuid(), false, "", "", "", "");
 
-			//assert
-			result.Should().BeEquivalentTo(_systemUnderTest.Ok());
+            //assert
+            result.Should().BeEquivalentTo(_systemUnderTest.Ok());
         }
 
-		[Test]
+        [Test]
         public async Task GetLogisticsLocationsForTradePartyAsyncReturnsBadRequest()
         {
             //arrange
             _mockEstablishmentsService
-                .Setup(x => x.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(x => x.GetActiveLogisticsLocationsForTradePartyAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ThrowsAsync(new Exception());
 
             //act
-            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, "", "");
+            var result = await _systemUnderTest.GetLogisticsLocationsForTradePartyAsync(Guid.Empty, false, "", "", "", "");
 
-			//assert
-			result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
+            //assert
+            result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
         }
 
-		[Test]
+        [Test]
         public async Task UpdateLogisticsLocationAsync_Returns_Success()
         {
             //arrange
@@ -442,7 +441,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         [Test]
         public async Task UpdateLogisticsLocationAsync_Returns_BadRequest()
         {
-            //arrange                        
+            //arrange
             _mockEstablishmentsService
                 .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception());
@@ -457,7 +456,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         [Test]
         public async Task UpdateLogisticsLocationSelfServeAsync_Returns_BadRequest()
         {
-            //arrange                        
+            //arrange
             _mockEstablishmentsService
                 .Setup(x => x.EstablishmentAlreadyExists(It.IsAny<LogisticsLocationDto>(), It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception());
@@ -485,7 +484,6 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             //assert
             results.Should().BeEquivalentTo(expected);
         }
-
 
         [Test]
         public async Task RemoveEstablishmentReturnsNoContent()
@@ -565,7 +563,8 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             var postCode = "G31 4EB";
             var addressesDto = new List<AddressDto>()
             {
-                new AddressDto("1234", null, null, null, null, null, postCode)
+                new AddressDto("1234", null, null, null, null, 0, null, 0, null, postCode, null, null, null, null, "uprn", 0, 0
+       )
             };
             var expected = _systemUnderTest.Ok(addressesDto);
             _mockEstablishmentsService.Setup(x => x.GetTradeAddressApiByPostcode(postCode)).Returns(addressesDto);
@@ -593,12 +592,11 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             result.Should().BeEquivalentTo(expected);
         }
 
-
         [Test]
         public void GetTradeAddressApiLocations_ReturnsBadRequest()
         {
             // arrange
-            var postCode = "G31 4EB";            
+            var postCode = "G31 4EB";
             _mockEstablishmentsService.Setup(x => x.GetTradeAddressApiByPostcode(postCode))
                 .Throws(new Exception());
 
@@ -645,7 +643,7 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
         public void GetLogisticsLocationByUprn_ReturnsBadRequest()
         {
             // arrange
-            var uprn = "1234";                        
+            var uprn = "1234";
             _mockEstablishmentsService.Setup(x => x.GetLogisticsLocationByUprnAsync(uprn))
                 .Throws(new Exception());
 
@@ -655,6 +653,5 @@ namespace Defra.Trade.ReMoS.AssuranceService.API.UnitTests.V1.Controllers
             // assert
             result.Should().BeEquivalentTo(_systemUnderTest.BadRequest());
         }
-
     }
 }
