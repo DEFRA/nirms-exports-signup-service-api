@@ -1,9 +1,7 @@
 ﻿using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Context;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Repositories;
