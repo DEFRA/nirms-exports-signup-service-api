@@ -3,9 +3,12 @@ using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
 using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Repositories;
@@ -110,44 +113,25 @@ public class EstablishmentRepository(ApplicationDbContext context) : IEstablishm
             locations = locations.OrderByDescending(loc => loc.LastModifiedDate);
         else
         {
-            const string ASCENDING = "ascending";
-            const string DESCENDING = "descending";
-            switch (sortColumn)
+            Dictionary<string, Expression<Func<LogisticsLocation, object?>>> sortColumns = new()
             {
-                case "0":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == ASCENDING)
-                        locations = locations.OrderBy(loc => loc.Name);
-                    if (sortDirection == DESCENDING)
-                        locations = locations.OrderByDescending(loc => loc.Name);
-                    break;
+                { "0", loc => loc.Name },
+                { "1", loc => loc.Address!.PostCode },
+                { "2", loc => loc.RemosEstablishmentSchemeNumber },
+                { "3", loc => loc.ApprovalStatus },
+                { "4", loc => loc.LastModifiedDate }
+            };
 
-                case "1":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == ASCENDING)
-                        locations = locations.OrderBy(loc => loc.Address!.PostCode);
-                    if (sortDirection == DESCENDING)
-                        locations = locations.OrderByDescending(loc => loc.Address!.PostCode);
-                    break;
-
-                case "2":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == ASCENDING)
-                        locations = locations.OrderBy(loc => loc.RemosEstablishmentSchemeNumber);
-                    if (sortDirection == DESCENDING)
-                        locations = locations.OrderByDescending(loc => loc.RemosEstablishmentSchemeNumber);
-                    break;
-
-                case "3":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == ASCENDING)
-                        locations = locations.OrderBy(loc => loc.ApprovalStatus);
-                    if (sortDirection == DESCENDING)
-                        locations = locations.OrderByDescending(loc => loc.ApprovalStatus);
-                    break;
-
-                case "4":
-                    if (string.IsNullOrEmpty(sortDirection) || sortDirection == ASCENDING)
-                        locations = locations.OrderBy(loc => loc.LastModifiedDate);
-                    if (sortDirection == DESCENDING)
-                        locations = locations.OrderByDescending(loc => loc.LastModifiedDate);
-                    break;
+            if (!sortColumns.ContainsKey(sortColumn))
+            {
+                if (string.IsNullOrEmpty(sortDirection) || sortDirection == "ascending")
+                {
+                    locations = locations.OrderBy(sortColumns[sortColumn]);
+                }
+                else if (sortDirection == "descending")
+                {
+                    locations = locations.OrderByDescending(sortColumns[sortColumn]);
+                }
             }
         }
         return locations;
@@ -161,9 +145,10 @@ public class EstablishmentRepository(ApplicationDbContext context) : IEstablishm
     public async Task<bool> LogisticsLocationAlreadyExists(string name, string addressLineOne, string postcode, Guid? exceptThisLocationId = null, Guid? partyId = null)
     {
         var query = _context.LogisticsLocation
-            .Where(loc => loc.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)
-            && loc.Address!.LineOne.Equals(addressLineOne, StringComparison.CurrentCultureIgnoreCase)
-            && loc.Address!.PostCode!.Replace(" ", "").Equals(postcode!.Replace(" ", ""), StringComparison.CurrentCultureIgnoreCase)
+            .Where(loc => loc.Address != null 
+            && loc.Name!.Equals(name, StringComparison.CurrentCultureIgnoreCase)
+            && loc.Address.LineOne!.Equals(addressLineOne, StringComparison.CurrentCultureIgnoreCase)
+            && loc.Address.PostCode!.Replace(" ", "").Equals(postcode.Replace(" ", ""), StringComparison.CurrentCultureIgnoreCase)
             && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Rejected
             && loc.ApprovalStatus != LogisticsLocationApprovalStatus.Removed
             && !loc.IsRemoved);
