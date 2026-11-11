@@ -3,6 +3,7 @@ using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Reflection.Metadata;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 
@@ -34,7 +35,8 @@ public class EstablishmentsController(IEstablishmentsService establishmentsServi
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> GetLogisticsLocationByIdAsync(Guid id)
     {
-        logger.LogInformation("Entered {Class}.{Method}", nameof(EstablishmentsController), nameof(GetLogisticsLocationByIdAsync));
+        const string message = $"Entered {nameof(EstablishmentsController)}.{nameof(GetLogisticsLocationByIdAsync)}";
+        logger.LogInformation(message);
 
         LogisticsLocationDto? result;
         try
