@@ -1,22 +1,15 @@
 ﻿using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Context;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Repositories;
 
 [ExcludeFromCodeCoverage]
-public class TradePartyRepository : ITradePartyRepository
+public class TradePartyRepository(ApplicationDbContext context) : ITradePartyRepository
 {
-    private readonly ApplicationDbContext _context;
-
-    public TradePartyRepository(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+    private readonly ApplicationDbContext _context = context;
 
     public async Task<TradeParty?> FindTradePartyByIdAsync(Guid id, CancellationToken cancellationToken = default )
     {
@@ -82,17 +75,17 @@ public class TradePartyRepository : ITradePartyRepository
     {
         if (party.AuthorisedSignatory != null)
         {
-            var dbSignatory = _context.AuthorisedSignatory.FirstOrDefault(a => a.Id == party.AuthorisedSignatory.Id);
+            var dbSignatory = await _context.AuthorisedSignatory.FirstOrDefaultAsync(a => a.Id == party.AuthorisedSignatory.Id, cancellationToken);
             if (dbSignatory != null)
             {
                 dbSignatory = party.AuthorisedSignatory;
                 _context.AuthorisedSignatory.Update(dbSignatory);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             else
             {
                 _context.AuthorisedSignatory.Add(party.AuthorisedSignatory);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);    
             }
         }
             
@@ -103,17 +96,17 @@ public class TradePartyRepository : ITradePartyRepository
     {
         if (party.TradeContact != null)
         {
-            var dbTradeContact = _context.TradeContacts.FirstOrDefault(a => a.Id == party.TradeContact.Id);
+            var dbTradeContact = await _context.TradeContacts.FirstOrDefaultAsync(a => a.Id == party.TradeContact.Id, cancellationToken );
             if (dbTradeContact != null)
             {
                 dbTradeContact = party.TradeContact;
                 _context.TradeContacts.Update(dbTradeContact);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             else
             {
                 _context.TradeContacts.Add(party.TradeContact);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
         }
 

@@ -95,7 +95,6 @@ extends:
     deployDevSlot: ${{ parameters.deployDevSlot }}
     appSettings: >-
       -KeyVaultEndpoint "https://$(Environment.Name)TRD$(nc-function-infrastructure)$(nc-resource-keyvault)1001.vault.azure.net/" 
-      -enableAppConfigServer true
       -AddressApi:BaseUrl "https://$(internalAPIMUrl)/trade-address-api/v1/"
       -TradePlatform:ServiceBusConnectionString "$(serviceBusNamespace)"
       -TradePlatform:ServiceBusName "defra.trade.sus.remos.signup"

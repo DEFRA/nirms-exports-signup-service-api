@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
 	<UserSecretsId>bafd8af1-aa5a-4770-8608-4a11d4cc2efa</UserSecretsId>
     <Nullable>enable</Nullable>
@@ -14,16 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Defra.Trade.Common" Version="4.0.2" />
-    <PackageReference Include="Defra.Trade.Common.Security" Version="3.0.1" />
-    <PackageReference Include="Defra.Trade.ReMoS.AssuranceService.Shared" Version="2.5.1-a" />
+    <PackageReference Include="Defra.Trade.Common" Version="5.0.2" />
+    <PackageReference Include="Defra.Trade.Common.Api" Version="4.0.3" />
+    <PackageReference Include="Defra.Trade.Common.Security" Version="4.0.3" />
+    <PackageReference Include="Defra.Trade.ReMoS.AssuranceService.Shared" Version="3.0.0-a" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="4.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
 
 </Project>
