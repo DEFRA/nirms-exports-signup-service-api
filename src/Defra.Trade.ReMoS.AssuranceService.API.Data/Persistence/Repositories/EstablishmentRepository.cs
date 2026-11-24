@@ -74,15 +74,7 @@ public class EstablishmentRepository(ApplicationDbContext context) : IEstablishm
             .Where(loc => !loc.IsRemoved)
             .Include(x => x.Address) as IQueryable<LogisticsLocation>;
 
-        if (!string.IsNullOrEmpty(NI_GBFlag))
-            locations = locations.Where(loc => loc.NI_GBFlag == NI_GBFlag);
-
-        if (!string.IsNullOrEmpty(searchTerm))
-            locations = locations.Where(loc => loc.Name!.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || 
-                                               loc.RemosEstablishmentSchemeNumber!.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) ||
-                                               loc.Address!.PostCode!.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
-
-        locations = AddSortClause(sortColumn, sortDirection, locations);
+        locations = FilterLocations(NI_GBFlag, searchTerm, sortColumn, sortDirection, locations);
 
         return await locations.ToListAsync();
     }
@@ -94,17 +86,24 @@ public class EstablishmentRepository(ApplicationDbContext context) : IEstablishm
             .Where(x => x.TradePartyId == tradePartyId)
             .Include(x => x.Address) as IQueryable<LogisticsLocation>;
 
+        locations = FilterLocations(NI_GBFlag, searchTerm, sortColumn, sortDirection, locations);
+
+        return await locations.ToListAsync();
+    }
+
+    private static IQueryable<LogisticsLocation> FilterLocations(string? NI_GBFlag, string? searchTerm, string? sortColumn, string? sortDirection, IQueryable<LogisticsLocation> locations)
+    {
         if (!string.IsNullOrEmpty(NI_GBFlag))
             locations = locations.Where(loc => loc.NI_GBFlag == NI_GBFlag);
 
         if (!string.IsNullOrEmpty(searchTerm))
-            locations = locations.Where(loc => loc.Name!.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || 
-                                               loc.RemosEstablishmentSchemeNumber!.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) || 
+            locations = locations.Where(loc => loc.Name!.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+                                               loc.RemosEstablishmentSchemeNumber!.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase) ||
                                                loc.Address!.PostCode!.Contains(searchTerm, StringComparison.CurrentCultureIgnoreCase));
 
         locations = AddSortClause(sortColumn, sortDirection, locations);
 
-        return await locations.ToListAsync();
+        return locations;
     }
 
     public static IQueryable<LogisticsLocation> AddSortClause(string? sortColumn, string? sortDirection, IQueryable<LogisticsLocation> locations)
