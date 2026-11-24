@@ -1,7 +1,6 @@
 ﻿using Defra.Trade.ReMoS.AssuranceService.API.Core.Models;
 using Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.Domain.Entities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -10,24 +9,18 @@ using System.Diagnostics.CodeAnalysis;
 namespace Defra.Trade.ReMoS.AssuranceService.API.Data.Persistence.Repositories;
 
 [ExcludeFromCodeCoverage]
-public class OsPlacesRepository : IOsPlacesRepository
+public class OsPlacesRepository(IOptions<AppConfigurationSettings> appConfiguration, ILogger<OsPlacesRepository> logger) : IOsPlacesRepository
 {
-    private readonly IOptions<AppConfigurationSettings> _appConfiguration;
-    private readonly ILogger<OsPlacesRepository> _logger;
-
-    public OsPlacesRepository(IOptions<AppConfigurationSettings> appConfiguration, ILogger<OsPlacesRepository> logger)
-    {
-        _appConfiguration = appConfiguration;
-        _logger = logger;
-    }
+    private readonly IOptions<AppConfigurationSettings> _appConfiguration = appConfiguration;
+    private readonly ILogger<OsPlacesRepository> _logger = logger;
 
     public async Task<OsPlaces> GetOSPlacesLocationsFromPostCodeAsync(string postCode)
     {
-        _logger.LogInformation($"GetOSPlacesLocationsFromPostCodeAsync for Postcode: {postCode}");
+        _logger.LogInformation("GetOSPlacesLocationsFromPostCodeAsync for Postcode: {PostCode}", postCode);
 
         var osPlaces = new OsPlaces
         {
-            Results = new List<OsPlacesResult>()
+            Results = []
         };
 
         using (var client = new HttpClient())
@@ -37,7 +30,7 @@ public class OsPlacesRepository : IOsPlacesRepository
   
             var osPlacesEndpoint = $"{osPlacesUrl}/postcode?postcode=" + postCode + "&dataset=DPA&lr=EN&maxresults=100&key=" + osKey;
 
-            _logger.LogInformation($"Contacting {osPlacesEndpoint}");
+            _logger.LogInformation("Contacting {OsPlacesEndpoint}", osPlacesEndpoint);
 
             var response = await client.GetAsync(osPlacesEndpoint).ConfigureAwait(true);
 

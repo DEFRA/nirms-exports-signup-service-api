@@ -3,8 +3,6 @@ using Defra.Trade.ReMoS.AssuranceService.API.Core.Helpers;
 using Defra.Trade.ReMoS.AssuranceService.API.Core.Interfaces;
 using Defra.Trade.ReMoS.AssuranceService.API.V1.Controllers;
 using Defra.Trade.ReMoS.AssuranceService.Shared.Enums;
-using Microsoft.Azure.Management.AppService.Fluent.Models;
-using Microsoft.Azure.Management.Sql.Fluent.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
 
